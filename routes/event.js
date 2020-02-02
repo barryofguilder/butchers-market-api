@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import Sequelize from 'sequelize';
 
 const router = new Router();
 
@@ -22,7 +23,21 @@ const serialize = model => {
 };
 
 router.get('/', async ctx => {
-  const events = await ctx.app.db.Event.findAll();
+  const query = ctx.query['filter[query]'];
+  let events;
+
+  if (query) {
+    events = await ctx.app.db.Event.findAll({
+      where: {
+        [Sequelize.Op.or]: [
+          { title: { [Sequelize.Op.like]: `%${query}%` } },
+          { leadIn: { [Sequelize.Op.like]: `%${query}%` } },
+        ],
+      },
+    });
+  } else {
+    events = await ctx.app.db.Event.findAll();
+  }
 
   ctx.body = { data: events.map(serialize) };
 });
