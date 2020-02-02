@@ -9,7 +9,9 @@
     "start": "node index.js",
     "start:dev": "nodemon index.js",
     "start:debug": "nodemon --inspect index.js",
-    "db:migrate": "sequelize-cli db:migrate"
+    "db:migrate": "sequelize-esm db:migrate",
+    "db:seed": "sequelize-esm db:seed:all",
+    "db:unseed": "sequelize-esm db:seed:undo:all"
   },
   "dependencies": {
     "@koa/cors": "^3.0.0",
