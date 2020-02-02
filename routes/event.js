@@ -29,7 +29,7 @@ router.get('/', async ctx => {
 
 router.get('/:id', async ctx => {
   const id = ctx.params.id;
-  const event = await ctx.app.db.Event.findByPk(id);
+  const event = await ctx.app.db.Event.findOrFail(id);
 
   ctx.body = { data: serialize(event) };
 });
@@ -47,7 +47,7 @@ router.post('/', async ctx => {
 router.patch('/:id', async ctx => {
   const id = ctx.params.id;
   const attrs = ctx.request.body.data.attributes;
-  const event = await ctx.app.db.Event.findByPk(id);
+  const event = await ctx.app.db.Event.findOrFail(id);
 
   event.set(attrs);
   await event.save();
@@ -57,7 +57,7 @@ router.patch('/:id', async ctx => {
 
 router.del('/:id', async ctx => {
   const id = ctx.params.id;
-  const event = await ctx.app.db.Event.findByPk(id);
+  const event = await ctx.app.db.Event.findOrFail(id);
 
   await event.destroy();
 
