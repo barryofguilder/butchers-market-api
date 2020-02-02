@@ -7,7 +7,9 @@
   "private": true,
   "scripts": {
     "start": "node index.js",
-    "start:dev": "nodemon index.js"
+    "start:dev": "nodemon index.js",
+    "start:debug": "nodemon --inspect index.js",
+    "db:migrate": "sequelize-cli db:migrate"
   },
   "dependencies": {
     "@koa/cors": "^3.0.0",

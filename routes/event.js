@@ -3,25 +3,6 @@ import Sequelize from 'sequelize';
 
 const router = new Router();
 
-const serialize = model => {
-  return {
-    type: 'events',
-    id: model.id,
-    attributes: {
-      title: model.title,
-      leadIn: model.leadIn,
-      description: model.description,
-      link: model.link,
-      imageUrl: model.imageUrl,
-      startTime: model.startTime,
-      endTime: model.endTime,
-    },
-    links: {
-      self: `/events/${model.id}`,
-    },
-  };
-};
-
 router.get('/', async ctx => {
   const query = ctx.query['filter[query]'];
   let events;
@@ -39,14 +20,14 @@ router.get('/', async ctx => {
     events = await ctx.app.db.Event.findAll();
   }
 
-  ctx.body = { data: events.map(serialize) };
+  ctx.body = ctx.app.serialize('event', events);
 });
 
 router.get('/:id', async ctx => {
   const id = ctx.params.id;
   const event = await ctx.app.db.Event.findOrFail(id);
 
-  ctx.body = { data: serialize(event) };
+  ctx.body = ctx.app.serialize('event', event);
 });
 
 router.post('/', async ctx => {
@@ -56,7 +37,7 @@ router.post('/', async ctx => {
   ctx.status = 201;
   ctx.set('Location', `/events/${event.id}`);
 
-  ctx.body = { data: serialize(event) };
+  ctx.body = ctx.app.serialize('event', event);
 });
 
 router.patch('/:id', async ctx => {
@@ -67,7 +48,7 @@ router.patch('/:id', async ctx => {
   event.set(attrs);
   await event.save();
 
-  ctx.body = { data: serialize(event) };
+  ctx.body = ctx.app.serialize('event', event);
 });
 
 router.del('/:id', async ctx => {

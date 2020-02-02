@@ -9,6 +9,7 @@ export default {
       },
       title: {
         type: Sequelize.STRING,
+        allowNull: false,
       },
       leadIn: {
         type: Sequelize.STRING,
@@ -24,9 +25,11 @@ export default {
       },
       startTime: {
         type: Sequelize.DATE,
+        allowNull: false,
       },
       endTime: {
         type: Sequelize.DATE,
+        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE,

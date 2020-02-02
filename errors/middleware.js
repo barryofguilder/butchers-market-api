@@ -1,4 +1,5 @@
 import NotFoundError from './not-found';
+import { ValidationError, UniqueConstraintError } from 'sequelize';
 
 export default async (ctx, next) => {
   try {
@@ -16,6 +17,26 @@ export default async (ctx, next) => {
               detail: `${err.modelName} not found with the id '${err.id}'`,
             },
           ],
+        });
+
+      case UniqueConstraintError:
+      case ValidationError:
+        ctx.status = 422;
+
+        return (ctx.body = {
+          errors: err.errors.map(valError => {
+            const title =
+              valError.validatorKey === 'notEmpty' ? `can't be blank` : valError.message;
+
+            return {
+              status: 422,
+              code: 100,
+              title,
+              source: {
+                pointer: `/data/attributes/${valError.path}`,
+              },
+            };
+          }),
         });
 
       default:

@@ -1,13 +1,39 @@
-export default (sequelize, DataTypes) => {
+const createModel = (sequelize, DataTypes) => {
   const Event = sequelize.define('Event', {
-    title: DataTypes.STRING,
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     leadIn: DataTypes.STRING,
     description: DataTypes.STRING,
     link: DataTypes.STRING,
     imageUrl: DataTypes.STRING,
-    startTime: DataTypes.DATE,
-    endTime: DataTypes.DATE,
+    startTime: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    endTime: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+        isGreaterThanStartTime(value) {
+          debugger;
+          if (value < this.startTime) {
+            throw new Error('must be greater than start time');
+          }
+        },
+      },
+    },
   });
 
   return Event;
 };
+
+export default createModel;
