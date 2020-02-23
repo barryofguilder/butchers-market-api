@@ -1,3 +1,5 @@
+import NAMESPACE from '../constants/namespace';
+
 export default model => {
   return {
     type: 'events',
@@ -12,7 +14,7 @@ export default model => {
       endTime: model.endTime,
     },
     links: {
-      self: `/events/${model.id}`,
+      self: `${NAMESPACE}/events/${model.id}`,
     },
   };
 };
