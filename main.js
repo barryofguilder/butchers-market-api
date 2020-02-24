@@ -1,6 +1,6 @@
 import Koa from 'koa';
 import logger from 'koa-logger';
-import bodyParser from 'koa-bodyparser';
+import koaBody from 'koa-body';
 import cors from '@koa/cors';
 
 import config from './config/app';
@@ -16,7 +16,7 @@ app.serialize = serialize;
 app.use(errorMiddleware);
 app.use(logger());
 app.use(cors());
-app.use(bodyParser());
+app.use(koaBody({ multipart: true }));
 
 app.use(router.allowedMethods());
 app.use(router.routes());
