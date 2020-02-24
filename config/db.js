@@ -7,5 +7,8 @@ export default {
     storage: process.env.DB_STORAGE,
   },
   test: {},
-  production: {},
+  production: {
+    dialect: 'sqlite',
+    storage: process.env.DB_STORAGE,
+  },
 };

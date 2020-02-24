@@ -1,26 +1,55 @@
 import Router from 'koa-router';
 import Sequelize from 'sequelize';
 
+import { buildPageMeta, getOffset } from '../utilities/page';
+
 const router = new Router();
 
 router.get('/', async ctx => {
   const query = ctx.query['filter[query]'];
-  let events;
+  const range = ctx.query['filter[range]'];
+  let where = {};
 
   if (query) {
-    events = await ctx.app.db.Event.findAll({
-      where: {
-        [Sequelize.Op.or]: [
-          { title: { [Sequelize.Op.like]: `%${query}%` } },
-          { leadIn: { [Sequelize.Op.like]: `%${query}%` } },
-        ],
-      },
-    });
-  } else {
-    events = await ctx.app.db.Event.findAll();
+    where = {
+      [Sequelize.Op.or]: [
+        { title: { [Sequelize.Op.like]: `%${query}%` } },
+        { leadIn: { [Sequelize.Op.like]: `%${query}%` } },
+      ],
+    };
+  } else if (range) {
+    if (range === 'upcoming') {
+      let date = new Date();
+      date.setHours(0, 0, 0, 0);
+
+      where = {
+        startTime: {
+          [Sequelize.Op.gt]: date,
+        },
+      };
+    } else if (range === 'past') {
+      where = {
+        startTime: {
+          [Sequelize.Op.lt]: new Date(),
+        },
+      };
+    }
   }
 
-  ctx.body = ctx.app.serialize('event', events);
+  const total = await ctx.app.db.Event.count({ where });
+  const page = buildPageMeta(ctx, total);
+  const offset = getOffset(page.number, page.size);
+
+  let events = await ctx.app.db.Event.findAll({
+    where,
+    order: [['startTime', 'asc']],
+    limit: page.size,
+    offset,
+  });
+  let response = ctx.app.serialize('event', events);
+  response.meta = { page };
+
+  ctx.body = response;
 });
 
 router.get('/:id', async ctx => {

@@ -24,7 +24,6 @@ const createModel = (sequelize, DataTypes) => {
       validate: {
         notEmpty: true,
         isGreaterThanStartTime(value) {
-          debugger;
           if (value < this.startTime) {
             throw new Error('must be greater than start time');
           }
