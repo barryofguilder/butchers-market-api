@@ -1,6 +1,8 @@
 import Router from 'koa-router';
-import status from './status';
+
+import deliItem from './deli-item';
 import event from './event';
+import status from './status';
 import upload from './upload';
 
 import NAMESPACE from '../constants/namespace';
@@ -8,6 +10,7 @@ import NAMESPACE from '../constants/namespace';
 const router = new Router();
 
 router.use(`${NAMESPACE}/`, status);
+router.use(`${NAMESPACE}/deli-items`, deliItem);
 router.use(`${NAMESPACE}/events`, event);
 router.use(`${NAMESPACE}/upload`, upload);
 

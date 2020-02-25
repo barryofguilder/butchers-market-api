@@ -1,6 +1,8 @@
+import deliItem from './deli-item';
 import event from './event';
 
 const resources = {
+  'deli-item': deliItem,
   event,
 };
 
