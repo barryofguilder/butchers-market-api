@@ -1,13 +1,9 @@
 import Router from 'koa-router';
 import Sequelize from 'sequelize';
-import fs from 'fs';
-import path from 'path';
-import uuidv1 from 'uuid/v1';
 
 import { buildPageMeta, getOffset } from '../utilities/page';
 
 const router = new Router();
-const UPLOAD_DIRECTORY = process.env.UPLOAD_DIR;
 
 router.get('/', async ctx => {
   const query = ctx.query['filter[query]'];
@@ -71,20 +67,6 @@ router.post('/', async ctx => {
   ctx.set('Location', `/events/${event.id}`);
 
   ctx.body = ctx.app.serialize('event', event);
-});
-
-router.post('/upload', async ctx => {
-  const file = ctx.request.files.file;
-  const reader = fs.createReadStream(file.path);
-  const bits = file.name.split('.');
-  const extention = bits.length > 1 ? `.${bits[bits.length - 1]}` : '';
-  const fileName = `${uuidv1()}${extention}`;
-  const stream = fs.createWriteStream(path.join(UPLOAD_DIRECTORY, fileName));
-
-  reader.pipe(stream);
-
-  ctx.status = 201;
-  ctx.body = fileName;
 });
 
 router.patch('/:id', async ctx => {
