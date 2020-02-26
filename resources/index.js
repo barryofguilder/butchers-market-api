@@ -2,12 +2,14 @@ import deliItem from './deli-item';
 import hour from './hour';
 import event from './event';
 import meatBundle from './meat-bundle';
+import review from './review';
 
 const resources = {
   'deli-item': deliItem,
   hour,
   event,
   'meat-bundle': meatBundle,
+  review,
 };
 
 export default function serialize(type, model) {
