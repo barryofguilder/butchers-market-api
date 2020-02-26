@@ -2,17 +2,17 @@ import NAMESPACE from '../constants/namespace';
 
 export default model => {
   return {
-    type: 'meat-bundles',
+    type: 'package-bundles',
     id: model.id,
     attributes: {
       displayOrder: model.displayOrder,
       title: model.title,
-      price: model.price,
-      featured: model.featured,
+      flyerDownloadLink: model.flyerDownloadLink,
+      prices: format(model.prices),
       items: format(model.items),
     },
     links: {
-      self: `${NAMESPACE}/meat-bundles/${model.id}`,
+      self: `${NAMESPACE}/package-bundles/${model.id}`,
     },
   };
 };

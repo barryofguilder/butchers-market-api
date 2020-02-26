@@ -2,6 +2,7 @@ import deliItem from './deli-item';
 import hour from './hour';
 import event from './event';
 import meatBundle from './meat-bundle';
+import packageBundle from './package-bundle';
 import review from './review';
 
 const resources = {
@@ -9,6 +10,7 @@ const resources = {
   hour,
   event,
   'meat-bundle': meatBundle,
+  'package-bundle': packageBundle,
   review,
 };
 
