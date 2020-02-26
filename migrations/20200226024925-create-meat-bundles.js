@@ -1,21 +1,29 @@
 export default {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('DeliItems', {
+    await queryInterface.createTable('MeatBundles', {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
+      displayOrder: {
+        type: Sequelize.INTEGER,
+      },
       title: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      ingredients: {
-        type: Sequelize.TEXT,
+      price: {
+        type: Sequelize.DECIMAL,
+        allowNull: false,
       },
-      imageUrl: {
-        type: Sequelize.STRING,
+      featured: {
+        type: Sequelize.BOOLEAN,
+      },
+      items: {
+        type: Sequelize.TEXT,
+        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -27,6 +35,6 @@ export default {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('DeliItems');
+    await queryInterface.dropTable('MeatBundles');
   },
 };
