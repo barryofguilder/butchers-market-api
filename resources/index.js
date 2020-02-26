@@ -1,8 +1,10 @@
 import deliItem from './deli-item';
+import hour from './hour';
 import event from './event';
 
 const resources = {
   'deli-item': deliItem,
+  hour,
   event,
 };
 
