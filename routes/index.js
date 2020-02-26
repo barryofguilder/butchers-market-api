@@ -6,6 +6,7 @@ import event from './event';
 import hour from './hour';
 import meatBundle from './meat-bundle';
 import packageBundle from './package-bundle';
+import performance from './performance';
 import review from './review';
 import upload from './upload';
 
@@ -19,6 +20,7 @@ router.use(`${NAMESPACE}/events`, event);
 router.use(`${NAMESPACE}/hours`, hour);
 router.use(`${NAMESPACE}/meat-bundles`, meatBundle);
 router.use(`${NAMESPACE}/package-bundles`, packageBundle);
+router.use(`${NAMESPACE}/performances`, performance);
 router.use(`${NAMESPACE}/reviews`, review);
 router.use(`${NAMESPACE}/upload`, upload);
 
