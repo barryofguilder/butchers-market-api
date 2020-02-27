@@ -6,5 +6,6 @@ else
   echo "Process is not running."
   #PATH=$PATH:/usr/local/bin
   PATH=$PATH:/home/butchersmarket/.nvm/versions/node/v10.12.0/bin
+  cd ~/public_html/api
   pm2 start ecosystem.config.js --env production
 fi
