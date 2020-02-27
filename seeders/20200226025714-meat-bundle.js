@@ -7,7 +7,7 @@ export default {
         price: '$68',
         featured: true,
         items: `
-          5lb. Ground Chuck
+          5lb. Ground Chuck,
           5lb. Bonesless Chicken Breasts,
           5lb. Boston Butt Pork Roast,
           5lb. Bonelesss Pork Chops
