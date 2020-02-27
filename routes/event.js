@@ -20,16 +20,17 @@ router.get('/', async ctx => {
   } else if (range) {
     if (range === 'upcoming') {
       let date = new Date();
+      // Set the hours to midnight
       date.setHours(0, 0, 0, 0);
 
       where = {
-        startTime: {
+        endTime: {
           [Sequelize.Op.gt]: date,
         },
       };
     } else if (range === 'past') {
       where = {
-        startTime: {
+        endTime: {
           [Sequelize.Op.lt]: new Date(),
         },
       };
