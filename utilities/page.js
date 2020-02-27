@@ -7,7 +7,8 @@ export function buildPageMeta(ctx, total, sizeParam) {
   return {
     number,
     size,
-    total,
+    total: total === 0 ? 1 : Math.ceil(total / size),
+    totalResults: total,
   };
 }
 
