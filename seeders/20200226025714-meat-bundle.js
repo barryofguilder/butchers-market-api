@@ -4,7 +4,7 @@ export default {
       {
         displayOrder: 1,
         title: '20lb Meat Pack',
-        price: '$68',
+        price: '$79',
         featured: true,
         items: `
           5 lbs. Ground Chuck,
@@ -17,7 +17,7 @@ export default {
       {
         displayOrder: 2,
         title: '30lb Meat Pack',
-        price: '$77',
+        price: '$89',
         featured: false,
         items: `
           5 lbs. Fresh Ground Chuck,
@@ -32,7 +32,7 @@ export default {
       {
         displayOrder: 3,
         title: '40lb Meat Pack',
-        price: '$114',
+        price: '$145',
         featured: false,
         items: `
           4 lbs. Beef Chuck Roast,
@@ -46,7 +46,7 @@ export default {
       {
         displayOrder: 4,
         title: '50lb Meat Pack',
-        price: '$129',
+        price: '$159',
         featured: true,
         items: `
           10 lbs. Fresh Ground Chuck,
@@ -60,7 +60,7 @@ export default {
       {
         displayOrder: 5,
         title: '75lb Meat Pack',
-        price: '$235',
+        price: '$329',
         featured: false,
         items: `
           4 (7 oz.) Beef Ribeye Steaks,
@@ -84,7 +84,7 @@ export default {
       {
         displayOrder: 6,
         title: '100lb Meat Pack',
-        price: '$325',
+        price: '$369',
         featured: false,
         items: `
           10 lbs. Beef Chuck Roast,
@@ -102,7 +102,7 @@ export default {
       {
         displayOrder: 7,
         title: 'Bundle Meat Pack #1',
-        price: '$69',
+        price: '$89',
         featured: false,
         items: `
           4 (7oz) Beef Ribeye Steaks,
@@ -115,7 +115,7 @@ export default {
       {
         displayOrder: 8,
         title: 'Bundle Meat Pack #2',
-        price: '$69',
+        price: '$89',
         featured: false,
         items: `
           4 (7oz) Beef N.Y. Strip Steaks,
@@ -128,7 +128,7 @@ export default {
       {
         displayOrder: 9,
         title: 'Mega Bundle',
-        price: '$119',
+        price: '$145',
         featured: true,
         items: `
           2 (7 oz.) Ribeye Steaks,
