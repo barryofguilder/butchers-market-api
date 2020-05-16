@@ -61,9 +61,9 @@ export default {
           Mini Corndogs|
           Sausage Biscuits|
           Sausage Croissants|
-          Sausage| Egg| Cheese Biscuits|
+          Sausage, Egg, & Cheese Biscuits|
           Chicken Biscuits|
-          Canadian Bacon| Egg Muffins|
+          Canadian Bacon & Egg Muffins|
           Cheeseburger Sliders|
           Chicken Sliders|
           Chicken Tamales|
