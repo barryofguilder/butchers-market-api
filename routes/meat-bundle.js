@@ -4,10 +4,15 @@ const router = new Router();
 
 router.get('/', async ctx => {
   const featured = ctx.query['filter[featured]'];
+  const isHidden = ctx.query['filter[isHidden]'];
   let where = {};
 
   if (featured !== undefined) {
-    where = { featured: true };
+    where.featured = true;
+  }
+
+  if (isHidden !== undefined) {
+    where.isHidden = isHidden === 'true';
   }
 
   let meatBundles = await ctx.app.db.MeatBundle.findAll({
@@ -29,7 +34,7 @@ router.patch('/:id', async ctx => {
   const id = ctx.params.id;
   const attrs = ctx.request.body.data.attributes;
 
-  attrs.items = attrs.items ? attrs.items.join(',') : attrs.items;
+  attrs.items = attrs.items ? attrs.items.join('|') : attrs.items;
 
   const meatBundle = await ctx.app.db.MeatBundle.findOrFail(id);
 

@@ -9,6 +9,8 @@ export default model => {
       title: model.title,
       price: model.price,
       featured: model.featured,
+      isHidden: model.isHidden,
+      orderEnabled: model.orderEnabled,
       items: format(model.items),
     },
     links: {
@@ -19,7 +21,7 @@ export default model => {
 
 function format(items) {
   if (items) {
-    return items.split(',').map(item => {
+    return items.split('|').map(item => {
       return item.replace('\n', '').trim();
     });
   }

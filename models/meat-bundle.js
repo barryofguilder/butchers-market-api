@@ -16,6 +16,8 @@ const createModel = (sequelize, DataTypes) => {
       },
     },
     featured: DataTypes.BOOLEAN,
+    isHidden: DataTypes.BOOLEAN,
+    orderEnabled: DataTypes.BOOLEAN,
     items: {
       type: DataTypes.STRING,
       allowNull: false,
