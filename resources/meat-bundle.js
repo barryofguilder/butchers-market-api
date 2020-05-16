@@ -10,6 +10,7 @@ export default model => {
       price: model.price,
       featured: model.featured,
       isHidden: model.isHidden,
+      orderEnabled: model.orderEnabled,
       items: format(model.items),
     },
     links: {
