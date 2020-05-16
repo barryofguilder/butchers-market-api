@@ -19,8 +19,8 @@ router.patch('/:id', async ctx => {
   const id = ctx.params.id;
   const attrs = ctx.request.body.data.attributes;
 
-  attrs.prices = attrs.prices ? attrs.prices.join(',') : attrs.prices;
-  attrs.items = attrs.items ? attrs.items.join(',') : attrs.items;
+  attrs.prices = attrs.prices ? attrs.prices.join('|') : attrs.prices;
+  attrs.items = attrs.items ? attrs.items.join('|') : attrs.items;
 
   const packageBundle = await ctx.app.db.PackageBundle.findOrFail(id);
 

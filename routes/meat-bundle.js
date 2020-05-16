@@ -34,7 +34,7 @@ router.patch('/:id', async ctx => {
   const id = ctx.params.id;
   const attrs = ctx.request.body.data.attributes;
 
-  attrs.items = attrs.items ? attrs.items.join(',') : attrs.items;
+  attrs.items = attrs.items ? attrs.items.join('|') : attrs.items;
 
   const meatBundle = await ctx.app.db.MeatBundle.findOrFail(id);
 

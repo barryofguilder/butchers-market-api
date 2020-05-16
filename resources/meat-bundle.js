@@ -21,7 +21,7 @@ export default model => {
 
 function format(items) {
   if (items) {
-    return items.split(',').map(item => {
+    return items.split('|').map(item => {
       return item.replace('\n', '').trim();
     });
   }
