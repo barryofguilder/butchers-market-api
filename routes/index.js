@@ -9,6 +9,7 @@ import meatBundle from './meat-bundle';
 import packageBundle from './package-bundle';
 import performance from './performance';
 import review from './review';
+import token from './token';
 import upload from './upload';
 
 import NAMESPACE from '../constants/namespace';
@@ -24,6 +25,7 @@ router.use(`${NAMESPACE}/meat-bundles`, meatBundle);
 router.use(`${NAMESPACE}/package-bundles`, packageBundle);
 router.use(`${NAMESPACE}/performances`, performance);
 router.use(`${NAMESPACE}/reviews`, review);
+router.use(`${NAMESPACE}/token`, token);
 router.use(`${NAMESPACE}/upload`, upload);
 
 export default router;

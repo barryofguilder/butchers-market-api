@@ -2,20 +2,9 @@ import Router from 'koa-router';
 import fetch from 'node-fetch';
 import nodemailer from 'nodemailer';
 
+import { isBlank } from '../utilities/is-blank';
+
 const router = new Router();
-
-// Email address where the message result should be delivered.
-const emailTo = 'thebutchersmarket@gmail.com';
-// From email address, in case your server prohibits sending emails from addresses other than those
-// of your own domain (e.g. email@yourdomain.com). If this is used then all email messages from your
-// contact form will appear from this address instead of actual sender.
-const emailFrom = 'drew@thebutchersmarket.com';
-// This will be the subject of the contact form message
-const emailSubject = 'Butcher Contact';
-
-const isBlank = function(field) {
-  return field === undefined || field === null || field.trim() === '';
-};
 
 const generateValidationError = function(field, title) {
   return {
@@ -56,7 +45,7 @@ router.post('/', async ctx => {
   const recaptchaResult = await verifyRecaptcha(recaptchaToken);
 
   if (recaptchaResult === false) {
-    let error = generateValidationError('message', 'Message is required');
+    let error = generateValidationError('recaptchaToken', 'reCaptcha token is not valid');
     return validationErrorResponse(ctx, [error]);
   }
 
@@ -113,10 +102,10 @@ async function sendMail(name, email, message) {
     });
 
     await transporter.sendMail({
-      from: emailFrom,
-      to: emailTo,
+      from: process.env.FEEDBACK_EMAIL_FROM,
+      to: process.env.FEEDBACK_EMAIL_TO,
       replyTo: email,
-      subject: emailSubject,
+      subject: process.env.FEEDBACK_EMAIL_SUBJECT,
       text,
     });
 
