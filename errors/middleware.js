@@ -5,6 +5,20 @@ export default async (ctx, next) => {
   try {
     await next();
   } catch (err) {
+    if (err.status === 401) {
+      ctx.status = 401;
+
+      return (ctx.body = {
+        errors: [
+          {
+            code: 401,
+            title: 'Unauthorized',
+            detail: 'Protected resource, use Authorization header to get access',
+          },
+        ],
+      });
+    }
+
     switch (err.constructor) {
       case NotFoundError:
         ctx.status = 404;
@@ -40,6 +54,7 @@ export default async (ctx, next) => {
         });
 
       default:
+        debugger;
         ctx.status = 500;
 
         return (ctx.body = {
