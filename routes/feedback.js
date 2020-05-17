@@ -88,10 +88,10 @@ async function verifyRecaptcha(token) {
 }
 
 async function sendMail(name, email, message) {
-  // if (process.env.NODE_ENV !== 'production') {
-  //   console.log('Skipping email sending due to environment');
-  //   return true;
-  // }
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('Skipping email sending due to environment');
+    return true;
+  }
 
   const text = `Name: ${name}\r\n\r\nEmail Address: ${email}\r\n\r\nMessage:\r\n${message}\r\n\r\n`;
 
