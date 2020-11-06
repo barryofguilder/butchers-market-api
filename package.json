@@ -2,7 +2,7 @@
   "name": "butchers-market-api",
   "version": "1.1.0",
   "main": "index.js",
-  "author": "Jason Barry <barryofguilder@gmail.com>",
+  "author": "Jason Barry <jbarry@hey.com>",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -14,27 +14,27 @@
     "db:unseed": "sequelize-esm db:seed:undo:all"
   },
   "dependencies": {
-    "@koa/cors": "^3.0.0",
+    "@koa/cors": "^3.1.0",
     "dotenv": "^8.2.0",
     "esm": "^3.2.25",
     "jsonwebtoken": "^8.5.1",
-    "koa": "^2.11.0",
-    "koa-body": "^4.1.1",
-    "koa-jwt": "^3.6.0",
+    "koa": "^2.13.0",
+    "koa-body": "^4.2.0",
+    "koa-jwt": "^4.0.0",
     "koa-logger": "^3.2.1",
-    "koa-router": "^8.0.6",
-    "node-fetch": "^2.6.0",
-    "nodemailer": "^6.4.3",
-    "sequelize": "^5.21.3",
+    "koa-router": "^10.0.0",
+    "node-fetch": "^2.6.1",
+    "nodemailer": "^6.4.15",
+    "sequelize": "^5.22.3",
     "sequelize-cli-esm": "^5.0.6",
-    "sqlite3": "^4.1.1",
-    "uuid": "^3.4.0"
+    "sqlite3": "^4.2.0",
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-prettier": "^3.1.2",
-    "nodemon": "^2.0.2",
-    "prettier": "1.19.1"
+    "eslint": "^7.12.1",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
+    "nodemon": "^2.0.6",
+    "prettier": "2.1.2"
   }
 }

@@ -2,7 +2,7 @@ import Router from 'koa-router';
 
 const router = new Router();
 
-router.get('/', async ctx => {
+router.get('/', async (ctx) => {
   const featured = ctx.query['filter[featured]'];
   const isHidden = ctx.query['filter[isHidden]'];
   let where = {};
@@ -23,14 +23,14 @@ router.get('/', async ctx => {
   ctx.body = ctx.app.serialize('meat-bundle', meatBundles);
 });
 
-router.get('/:id', async ctx => {
+router.get('/:id', async (ctx) => {
   const id = ctx.params.id;
   const meatBundle = await ctx.app.db.MeatBundle.findOrFail(id);
 
   ctx.body = ctx.app.serialize('meat-bundle', meatBundle);
 });
 
-router.patch('/:id', async ctx => {
+router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
   const attrs = ctx.request.body.data.attributes;
 

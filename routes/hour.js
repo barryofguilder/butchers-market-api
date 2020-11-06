@@ -2,7 +2,7 @@ import Router from 'koa-router';
 
 const router = new Router();
 
-router.get('/', async ctx => {
+router.get('/', async (ctx) => {
   let hours = await ctx.app.db.Hour.findAll({
     order: [
       ['default', 'desc'],
@@ -14,14 +14,14 @@ router.get('/', async ctx => {
   ctx.body = ctx.app.serialize('hour', hours);
 });
 
-router.get('/:id', async ctx => {
+router.get('/:id', async (ctx) => {
   const id = ctx.params.id;
   const hour = await ctx.app.db.Hour.findOrFail(id);
 
   ctx.body = ctx.app.serialize('hour', hour);
 });
 
-router.post('/', async ctx => {
+router.post('/', async (ctx) => {
   const attrs = ctx.request.body.data.attributes;
   const hour = await ctx.app.db.Hour.create(attrs);
 
@@ -31,7 +31,7 @@ router.post('/', async ctx => {
   ctx.body = ctx.app.serialize('hour', hour);
 });
 
-router.patch('/:id', async ctx => {
+router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
   const attrs = ctx.request.body.data.attributes;
   const hour = await ctx.app.db.Hour.findOrFail(id);
@@ -42,7 +42,7 @@ router.patch('/:id', async ctx => {
   ctx.body = ctx.app.serialize('hour', hour);
 });
 
-router.del('/:id', async ctx => {
+router.del('/:id', async (ctx) => {
   const id = ctx.params.id;
   const hour = await ctx.app.db.Hour.findOrFail(id);
 

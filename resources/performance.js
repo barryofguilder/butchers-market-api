@@ -1,6 +1,6 @@
 import NAMESPACE from '../constants/namespace';
 
-export default model => {
+export default (model) => {
   return {
     type: 'performances',
     id: model.id,

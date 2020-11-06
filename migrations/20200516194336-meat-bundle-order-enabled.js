@@ -1,6 +1,6 @@
 export default {
   async up(queryInterface, Sequelize) {
-    await queryInterface.sequelize.transaction(t => {
+    await queryInterface.sequelize.transaction((t) => {
       return Promise.all([
         queryInterface.addColumn(
           'MeatBundles',
@@ -16,7 +16,7 @@ export default {
   },
 
   async down(queryInterface, Sequelize) {
-    return await queryInterface.sequelize.transaction(t => {
+    return await queryInterface.sequelize.transaction((t) => {
       return Promise.all([
         queryInterface.removeColumn('MeatBundles', 'orderEnabled', { transaction: t }),
       ]);

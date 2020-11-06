@@ -2,20 +2,20 @@ import Router from 'koa-router';
 
 const router = new Router();
 
-router.get('/', async ctx => {
+router.get('/', async (ctx) => {
   let performances = await ctx.app.db.Performance.findAll();
 
   ctx.body = ctx.app.serialize('performance', performances);
 });
 
-router.get('/:id', async ctx => {
+router.get('/:id', async (ctx) => {
   const id = ctx.params.id;
   const performance = await ctx.app.db.Performance.findOrFail(id);
 
   ctx.body = ctx.app.serialize('performance', performance);
 });
 
-router.post('/', async ctx => {
+router.post('/', async (ctx) => {
   const attrs = ctx.request.body.data.attributes;
   const performance = await ctx.app.db.Performance.create(attrs);
 
@@ -25,7 +25,7 @@ router.post('/', async ctx => {
   ctx.body = ctx.app.serialize('performance', performance);
 });
 
-router.patch('/:id', async ctx => {
+router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
   const attrs = ctx.request.body.data.attributes;
   const performance = await ctx.app.db.Performance.findOrFail(id);
@@ -36,7 +36,7 @@ router.patch('/:id', async ctx => {
   ctx.body = ctx.app.serialize('performance', performance);
 });
 
-router.del('/:id', async ctx => {
+router.del('/:id', async (ctx) => {
   const id = ctx.params.id;
   const performance = await ctx.app.db.Performance.findOrFail(id);
 

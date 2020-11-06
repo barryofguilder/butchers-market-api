@@ -5,7 +5,7 @@ import { buildPageMeta, getOffset } from '../utilities/page';
 
 const router = new Router();
 
-router.get('/', async ctx => {
+router.get('/', async (ctx) => {
   const query = ctx.query['filter[query]'];
   const range = ctx.query['filter[range]'];
   let where = {};
@@ -53,14 +53,14 @@ router.get('/', async ctx => {
   ctx.body = response;
 });
 
-router.get('/:id', async ctx => {
+router.get('/:id', async (ctx) => {
   const id = ctx.params.id;
   const event = await ctx.app.db.Event.findOrFail(id);
 
   ctx.body = ctx.app.serialize('event', event);
 });
 
-router.post('/', async ctx => {
+router.post('/', async (ctx) => {
   const attrs = ctx.request.body.data.attributes;
   const event = await ctx.app.db.Event.create(attrs);
 
@@ -70,7 +70,7 @@ router.post('/', async ctx => {
   ctx.body = ctx.app.serialize('event', event);
 });
 
-router.patch('/:id', async ctx => {
+router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
   const attrs = ctx.request.body.data.attributes;
   const event = await ctx.app.db.Event.findOrFail(id);
@@ -81,7 +81,7 @@ router.patch('/:id', async ctx => {
   ctx.body = ctx.app.serialize('event', event);
 });
 
-router.del('/:id', async ctx => {
+router.del('/:id', async (ctx) => {
   const id = ctx.params.id;
   const event = await ctx.app.db.Event.findOrFail(id);
 

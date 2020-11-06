@@ -1,6 +1,6 @@
 import NAMESPACE from '../constants/namespace';
 
-export default model => {
+export default (model) => {
   return {
     type: 'meat-bundles',
     id: model.id,
@@ -21,7 +21,7 @@ export default model => {
 
 function format(items) {
   if (items) {
-    return items.split('|').map(item => {
+    return items.split('|').map((item) => {
       return item.replace('\n', '').trim();
     });
   }
