@@ -1,7 +1,7 @@
 import Router from 'koa-router';
 import fs from 'fs';
 import path from 'path';
-import uuidv1 from 'uuid/v1';
+import { v1 as uuidv1 } from 'uuid';
 
 const router = new Router();
 const UPLOAD_DIRECTORY = process.env.UPLOAD_DIR;
