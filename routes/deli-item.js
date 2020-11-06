@@ -2,20 +2,20 @@ import Router from 'koa-router';
 
 const router = new Router();
 
-router.get('/', async ctx => {
+router.get('/', async (ctx) => {
   let deliItems = await ctx.app.db.DeliItem.findAll({ order: [['title', 'asc']] });
 
   ctx.body = ctx.app.serialize('deli-item', deliItems);
 });
 
-router.get('/:id', async ctx => {
+router.get('/:id', async (ctx) => {
   const id = ctx.params.id;
   const deliItem = await ctx.app.db.DeliItem.findOrFail(id);
 
   ctx.body = ctx.app.serialize('deli-item', deliItem);
 });
 
-router.post('/', async ctx => {
+router.post('/', async (ctx) => {
   const attrs = ctx.request.body.data.attributes;
   const deliItem = await ctx.app.db.DeliItem.create(attrs);
 
@@ -25,7 +25,7 @@ router.post('/', async ctx => {
   ctx.body = ctx.app.serialize('deli-item', deliItem);
 });
 
-router.patch('/:id', async ctx => {
+router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
   const attrs = ctx.request.body.data.attributes;
   const deliItem = await ctx.app.db.DeliItem.findOrFail(id);
@@ -36,7 +36,7 @@ router.patch('/:id', async ctx => {
   ctx.body = ctx.app.serialize('deli-item', deliItem);
 });
 
-router.del('/:id', async ctx => {
+router.del('/:id', async (ctx) => {
   const id = ctx.params.id;
   const deliItem = await ctx.app.db.DeliItem.findOrFail(id);
 

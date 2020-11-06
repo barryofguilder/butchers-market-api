@@ -21,14 +21,14 @@ app.use(koaBody({ multipart: true }));
 
 app.use(router.allowedMethods());
 app.use(
-  jwt({ secret: process.env.TOKEN_SECRET }).unless(function({ url, method }) {
+  jwt({ secret: process.env.TOKEN_SECRET }).unless(function ({ url, method }) {
     if (method === 'GET') {
       return true;
     }
 
     const publicRoutes = ['/api/feedback', '/api/token'];
 
-    return publicRoutes.some(route => {
+    return publicRoutes.some((route) => {
       return url.startsWith(route);
     });
   })

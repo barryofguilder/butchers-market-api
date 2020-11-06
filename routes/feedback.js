@@ -6,7 +6,7 @@ import { isBlank } from '../utilities/is-blank';
 
 const router = new Router();
 
-const generateValidationError = function(field, title) {
+const generateValidationError = function (field, title) {
   return {
     status: 422,
     code: 100,
@@ -17,12 +17,12 @@ const generateValidationError = function(field, title) {
   };
 };
 
-const validationErrorResponse = function(ctx, errors) {
+const validationErrorResponse = function (ctx, errors) {
   ctx.status = 422;
   ctx.body = { errors };
 };
 
-router.post('/', async ctx => {
+router.post('/', async (ctx) => {
   const { name, email, message, recaptchaToken } = ctx.request.body.data.attributes;
   let errors = [];
 

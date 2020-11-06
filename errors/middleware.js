@@ -38,7 +38,7 @@ export default async (ctx, next) => {
         ctx.status = 422;
 
         return (ctx.body = {
-          errors: err.errors.map(valError => {
+          errors: err.errors.map((valError) => {
             const title =
               valError.validatorKey === 'notEmpty' ? `can't be blank` : valError.message;
 

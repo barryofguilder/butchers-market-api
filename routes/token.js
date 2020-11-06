@@ -12,7 +12,7 @@ const handleError = () => {
   throw error;
 };
 
-router.post('/', async ctx => {
+router.post('/', async (ctx) => {
   const { username, password } = ctx.request.body.data.attributes;
 
   if (isBlank(username) || isBlank(password)) {
