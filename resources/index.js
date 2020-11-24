@@ -5,6 +5,7 @@ import meatBundle from './meat-bundle';
 import packageBundle from './package-bundle';
 import performance from './performance';
 import review from './review';
+import special from './special';
 
 const resources = {
   'deli-item': deliItem,
@@ -14,6 +15,7 @@ const resources = {
   'package-bundle': packageBundle,
   performance,
   review,
+  special,
 };
 
 export default function serialize(type, model) {

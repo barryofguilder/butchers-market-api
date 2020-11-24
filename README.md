@@ -33,3 +33,25 @@ You will need the following things properly installed on your computer.
 * `yarn start:debug` will run in debugger mode
   * In Chrome, navigate to `chrome://inspect`
   * Click on the "Inspect" link to launch the debugger window
+
+## Sequelize Scripts
+
+List of common scripts you'll use with Sequelize.
+
+### Create Migration
+
+Creating a new migration will create a new database table and a corresponding model. In the example
+below, we are creating a `Special` model with a single attribute of `title`.
+
+```bash
+sequelize-esm model:generate --name Special --attributes title:string
+```
+
+### Create Seed
+
+Once you create a new table, you'll probably want to add some seed data to it. In the example below,
+we are creating a seed for the `Special` model.
+
+```bash
+sequelize-esm seed:generate --name special
+```
