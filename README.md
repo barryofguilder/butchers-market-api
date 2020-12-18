@@ -34,6 +34,14 @@ You will need the following things properly installed on your computer.
   * In Chrome, navigate to `chrome://inspect`
   * Click on the "Inspect" link to launch the debugger window
 
+## Deployment
+
+When running the Sequelize scripts on production, you must prefix all the commands with:
+
+```bash
+NODE_ENVIRONMENT=production DB_STORAGE=../db/butcher.sqlite3
+```
+
 ## Sequelize Scripts
 
 List of common scripts you'll use with Sequelize.
