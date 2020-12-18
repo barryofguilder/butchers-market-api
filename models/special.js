@@ -7,6 +7,8 @@ const createModel = (sequelize, DataTypes) => {
         notEmpty: true,
       },
     },
+    link: DataTypes.STRING,
+    displayOrder: DataTypes.INTEGER,
     imageUrl: {
       type: DataTypes.STRING,
       allowNull: false,
