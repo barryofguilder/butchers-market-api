@@ -6,6 +6,8 @@ export default (model) => {
     id: model.id,
     attributes: {
       title: model.title,
+      link: model.link,
+      displayOrder: model.displayOrder,
       imageUrl: model.imageUrl,
       imageAltText: model.imageAltText,
       activeStartDate: model.activeStartDate,

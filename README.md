@@ -38,13 +38,22 @@ You will need the following things properly installed on your computer.
 
 List of common scripts you'll use with Sequelize.
 
-### Create Migration
+### Create Model
 
-Creating a new migration will create a new database table and a corresponding model. In the example
+Creating a new model will create a new database table and a corresponding model. In the example
 below, we are creating a `Special` model with a single attribute of `title`.
 
 ```bash
 sequelize-esm model:generate --name Special --attributes title:string
+```
+
+### Create Migration
+
+Creating a new migration will create the database scripts needed to change the underlying database 
+table.
+
+```bash
+sequelize-esm migration:generate --name special-link
 ```
 
 ### Create Seed
