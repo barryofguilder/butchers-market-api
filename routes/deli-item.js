@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import { deleteUploadedFile } from '../utilities/file';
 
 const router = new Router();
 
@@ -30,6 +31,11 @@ router.patch('/:id', async (ctx) => {
   const attrs = ctx.request.body.data.attributes;
   const deliItem = await ctx.app.db.DeliItem.findOrFail(id);
 
+  // Delete the old image path
+  if (deliItem.imageUrl && deliItem.imageUrl !== attrs.imageUrl) {
+    deleteUploadedFile(deliItem.imageUrl);
+  }
+
   deliItem.set(attrs);
   await deliItem.save();
 
@@ -40,6 +46,7 @@ router.del('/:id', async (ctx) => {
   const id = ctx.params.id;
   const deliItem = await ctx.app.db.DeliItem.findOrFail(id);
 
+  deleteUploadedFile(deliItem.imageUrl);
   await deliItem.destroy();
 
   ctx.status = 204;
