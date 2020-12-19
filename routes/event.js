@@ -1,5 +1,6 @@
 import Router from 'koa-router';
 import Sequelize from 'sequelize';
+import { deleteUploadedFile } from '../utilities/file';
 
 import { buildPageMeta, getOffset } from '../utilities/page';
 
@@ -75,6 +76,11 @@ router.patch('/:id', async (ctx) => {
   const attrs = ctx.request.body.data.attributes;
   const event = await ctx.app.db.Event.findOrFail(id);
 
+  // Delete the old image path
+  if (event.imageUrl && event.imageUrl !== attrs.imageUrl) {
+    deleteUploadedFile(event.imageUrl);
+  }
+
   event.set(attrs);
   await event.save();
 
@@ -85,6 +91,7 @@ router.del('/:id', async (ctx) => {
   const id = ctx.params.id;
   const event = await ctx.app.db.Event.findOrFail(id);
 
+  deleteUploadedFile(event.imageUrl);
   await event.destroy();
 
   ctx.status = 204;
