@@ -40,8 +40,8 @@ Copy all files that have changed, even the `package.json` file.
 
 ```bash
 npm install --production
-NODE_ENVIRONMENT=production DB_STORAGE=../db/butcher.sqlite3 sequelize-esm db:migrate
-NODE_ENVIRONMENT=production DB_STORAGE=../db/butcher.sqlite3 sequelize-esm db:seed --seed <name>
+NODE_ENVIRONMENT=production DB_STORAGE=../db/butcher.sqlite3 npm run db:migrate
+NODE_ENVIRONMENT=production DB_STORAGE=../db/butcher.sqlite3 npm run db:seed --seed <name>
 pm2 list
 pm2 stop <name>
 pm2 start ecosystem.config.js --env production
@@ -56,7 +56,7 @@ NODE_ENVIRONMENT=production DB_STORAGE=../db/butcher.sqlite3
 If you need to undo a database seed, run:
 
 ```bash
-NODE_ENVIRONMENT=production DB_STORAGE=../db/butcher.sqlite3 sequelize-esm db:seed:undo --seed <name>
+NODE_ENVIRONMENT=production DB_STORAGE=../db/butcher.sqlite3 npm run db:seed:undo --seed <name>
 ```
 
 If you need to restore the most recent database backup, delete the existing database and then run:
