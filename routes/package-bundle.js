@@ -1,4 +1,5 @@
 import Router from 'koa-router';
+import { deleteUploadedFile } from '../utilities/file';
 
 const router = new Router();
 
@@ -23,6 +24,11 @@ router.patch('/:id', async (ctx) => {
   attrs.items = attrs.items ? attrs.items.join('|') : attrs.items;
 
   const packageBundle = await ctx.app.db.PackageBundle.findOrFail(id);
+
+  // Delete the old file path
+  if (packageBundle.fileUrl && packageBundle.fileUrl !== attrs.fileUrl) {
+    deleteUploadedFile(packageBundle.fileUrl);
+  }
 
   packageBundle.set(attrs);
   await packageBundle.save();
