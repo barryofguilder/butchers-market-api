@@ -8,14 +8,14 @@ You will need the following things properly installed on your computer.
 
 * [Git](https://git-scm.com/)
 * [Node.js](https://nodejs.org/)
-* [Yarn](https://yarnpkg.com/)
+* [Volta](https://volta.sh/)
 * [Google Chrome](https://google.com/chrome/)
 
 ## Installation
 
 * `git clone <repository-url>` this repository
 * `cd butchers-market-api`
-* `yarn`
+* `npm install`
 
 ## Configure Environment Variables
 
@@ -23,14 +23,14 @@ You will need the following things properly installed on your computer.
 
 ## Create Database
 
-* `yarn db:migrate`
-* `yarn db:seed`
+* `npm run db:migrate`
+* `npm run db:seed`
 
 ## Running / Development
 
-* `yarn start`
-* `yarn start:dev` will auto restart when files change
-* `yarn start:debug` will run in debugger mode
+* `npm start`
+* `npm run start:dev` will auto restart when files change
+* `npm run start:debug` will run in debugger mode
   * In Chrome, navigate to `chrome://inspect`
   * Click on the "Inspect" link to launch the debugger window
 
