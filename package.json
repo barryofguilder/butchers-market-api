@@ -27,7 +27,7 @@
     "koa-router": "^10.1.1",
     "node-fetch": "^2.6.7",
     "nodemailer": "^6.7.7",
-    "sequelize": "^5.22.5",
+    "sequelize": "5.22.4",
     "sequelize-cli-esm": "^5.0.6",
     "sqlite3": "^4.2.0"
   },
