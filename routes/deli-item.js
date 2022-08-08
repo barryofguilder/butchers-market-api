@@ -31,9 +31,13 @@ router.patch('/:id', async (ctx) => {
   const attrs = ctx.request.body.data.attributes;
   const deliItem = await ctx.app.db.DeliItem.findOrFail(id);
 
-  // Delete the old image path
-  if (deliItem.imageUrl && deliItem.imageUrl !== attrs.imageUrl) {
-    deleteUploadedFile(deliItem.imageUrl);
+  try {
+    // Delete the old image path
+    if (deliItem.imageUrl && deliItem.imageUrl !== attrs.imageUrl) {
+      deleteUploadedFile(deliItem.imageUrl);
+    }
+  } catch (error) {
+    console.error(error);
   }
 
   deliItem.set(attrs);
@@ -46,7 +50,12 @@ router.del('/:id', async (ctx) => {
   const id = ctx.params.id;
   const deliItem = await ctx.app.db.DeliItem.findOrFail(id);
 
-  deleteUploadedFile(deliItem.imageUrl);
+  try {
+    deleteUploadedFile(deliItem.imageUrl);
+  } catch (error) {
+    console.error(error);
+  }
+
   await deliItem.destroy();
 
   ctx.status = 204;

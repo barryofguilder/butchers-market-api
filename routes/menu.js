@@ -21,9 +21,13 @@ router.patch('/:id', async (ctx) => {
   const attrs = ctx.request.body.data.attributes;
   const menu = await ctx.app.db.Menu.findOrFail(id);
 
-  // Delete the old file path
-  if (menu.fileUrl && menu.fileUrl !== attrs.fileUrl) {
-    deleteUploadedFile(menu.fileUrl);
+  try {
+    // Delete the old file path
+    if (menu.fileUrl && menu.fileUrl !== attrs.fileUrl) {
+      deleteUploadedFile(menu.fileUrl);
+    }
+  } catch (error) {
+    console.error(error);
   }
 
   menu.set(attrs);
