@@ -1,15 +1,16 @@
-const createModel = (sequelize, DataTypes) => {
+const { Sequelize } = require('sequelize');
+
+module.exports = (sequelize) => {
   const Menu = sequelize.define('Menu', {
     fileUrl: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    updatedAt: DataTypes.DATE,
+    updatedAt: Sequelize.DATE,
   });
 
   return Menu;
 };
-export default createModel;

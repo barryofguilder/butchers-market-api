@@ -1,14 +1,16 @@
-const createModel = (sequelize, DataTypes) => {
+const { Sequelize } = require('sequelize');
+
+module.exports = (sequelize) => {
   const Performance = sequelize.define('Performance', {
     title: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
     link: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -18,5 +20,3 @@ const createModel = (sequelize, DataTypes) => {
 
   return Performance;
 };
-
-export default createModel;

@@ -54,7 +54,6 @@ export default async (ctx, next) => {
         });
 
       default:
-        debugger;
         ctx.status = 500;
 
         return (ctx.body = {

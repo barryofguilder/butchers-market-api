@@ -1,31 +1,33 @@
-const createModel = (sequelize, DataTypes) => {
+const { Sequelize } = require('sequelize');
+
+module.exports = (sequelize) => {
   const Special = sequelize.define('Special', {
     title: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    link: DataTypes.STRING,
-    displayOrder: DataTypes.INTEGER,
+    link: Sequelize.STRING,
+    displayOrder: Sequelize.INTEGER,
     imageUrl: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
     imageAltText: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    activeStartDate: DataTypes.DATE,
+    activeStartDate: Sequelize.DATE,
     activeEndDate: {
-      type: DataTypes.DATE,
+      type: Sequelize.DATE,
       validate: {
         isGreaterThanStartDate(value) {
           if (this.activeStartDate && value < this.activeStartDate) {
@@ -34,11 +36,9 @@ const createModel = (sequelize, DataTypes) => {
         },
       },
     },
-    isSoldOut: DataTypes.BOOLEAN,
-    isHidden: DataTypes.BOOLEAN,
+    isSoldOut: Sequelize.BOOLEAN,
+    isHidden: Sequelize.BOOLEAN,
   });
 
   return Special;
 };
-
-export default createModel;

@@ -1,25 +1,27 @@
-const createModel = (sequelize, DataTypes) => {
+const { Sequelize } = require('sequelize');
+
+module.exports = (sequelize) => {
   const Event = sequelize.define('Event', {
     title: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    leadIn: DataTypes.STRING,
-    description: DataTypes.STRING,
-    link: DataTypes.STRING,
-    imageUrl: DataTypes.STRING,
+    leadIn: Sequelize.STRING,
+    description: Sequelize.STRING,
+    link: Sequelize.STRING,
+    imageUrl: Sequelize.STRING,
     startTime: {
-      type: DataTypes.DATE,
+      type: Sequelize.DATE,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
     endTime: {
-      type: DataTypes.DATE,
+      type: Sequelize.DATE,
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -34,5 +36,3 @@ const createModel = (sequelize, DataTypes) => {
 
   return Event;
 };
-
-export default createModel;
