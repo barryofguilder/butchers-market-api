@@ -1,17 +1,17 @@
-const createModel = (sequelize, DataTypes) => {
+const { Sequelize } = require('sequelize');
+
+module.exports = (sequelize) => {
   const DeliItem = sequelize.define('DeliItem', {
     title: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    ingredients: DataTypes.STRING,
-    imageUrl: DataTypes.STRING,
+    ingredients: Sequelize.STRING,
+    imageUrl: Sequelize.STRING,
   });
 
   return DeliItem;
 };
-
-export default createModel;

@@ -1,16 +1,18 @@
-const createModel = (sequelize, DataTypes) => {
+const { Sequelize } = require('sequelize');
+
+module.exports = (sequelize) => {
   const Hour = sequelize.define('Hour', {
     type: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    default: DataTypes.BOOLEAN,
-    activeStartDate: DataTypes.DATE,
+    default: Sequelize.BOOLEAN,
+    activeStartDate: Sequelize.DATE,
     activeEndDate: {
-      type: DataTypes.DATE,
+      type: Sequelize.DATE,
       validate: {
         isGreaterThanStartDate(value) {
           if (this.activeStartDate && value < this.activeStartDate) {
@@ -20,24 +22,22 @@ const createModel = (sequelize, DataTypes) => {
       },
     },
     label: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
     line1: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    line2: DataTypes.STRING,
-    line3: DataTypes.STRING,
+    line2: Sequelize.STRING,
+    line3: Sequelize.STRING,
   });
 
   return Hour;
 };
-
-export default createModel;

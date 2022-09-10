@@ -1,26 +1,28 @@
-const createModel = (sequelize, DataTypes) => {
+const { Sequelize } = require('sequelize');
+
+module.exports = (sequelize) => {
   const MeatBundle = sequelize.define('MeatBundle', {
-    displayOrder: DataTypes.INTEGER,
+    displayOrder: Sequelize.INTEGER,
     title: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
     price: {
-      type: DataTypes.DECIMAL,
+      type: Sequelize.DECIMAL,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    featured: DataTypes.BOOLEAN,
-    specialText: DataTypes.STRING,
-    isHidden: DataTypes.BOOLEAN,
-    orderEnabled: DataTypes.BOOLEAN,
+    featured: Sequelize.BOOLEAN,
+    specialText: Sequelize.STRING,
+    isHidden: Sequelize.BOOLEAN,
+    orderEnabled: Sequelize.BOOLEAN,
     items: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -30,5 +32,3 @@ const createModel = (sequelize, DataTypes) => {
 
   return MeatBundle;
 };
-
-export default createModel;

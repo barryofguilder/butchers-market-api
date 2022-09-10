@@ -1,17 +1,19 @@
-const createModel = (sequelize, DataTypes) => {
+const { Sequelize } = require('sequelize');
+
+module.exports = (sequelize) => {
   const Review = sequelize.define('Review', {
     reviewer: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
 
-    imageUrl: DataTypes.STRING,
+    imageUrl: Sequelize.STRING,
 
     text: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
@@ -19,17 +21,15 @@ const createModel = (sequelize, DataTypes) => {
     },
 
     source: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
 
-    url: DataTypes.STRING,
+    url: Sequelize.STRING,
   });
 
   return Review;
 };
-
-export default createModel;

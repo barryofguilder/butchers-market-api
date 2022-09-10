@@ -1,20 +1,20 @@
-const createModel = (sequelize, DataTypes) => {
+const { Sequelize } = require('sequelize');
+
+module.exports = (sequelize) => {
   const PackageBundle = sequelize.define('PackageBundle', {
-    displayOrder: DataTypes.INTEGER,
+    displayOrder: Sequelize.INTEGER,
     title: {
-      type: DataTypes.STRING,
+      type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    fileUrl: DataTypes.STRING,
-    specialText: DataTypes.STRING,
-    prices: DataTypes.STRING,
-    items: DataTypes.TEXT,
+    fileUrl: Sequelize.STRING,
+    specialText: Sequelize.STRING,
+    prices: Sequelize.STRING,
+    items: Sequelize.TEXT,
   });
 
   return PackageBundle;
 };
-
-export default createModel;
