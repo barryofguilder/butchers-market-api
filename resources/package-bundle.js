@@ -9,6 +9,7 @@ export default (model) => {
       title: model.title,
       flyerDownloadLink: model.flyerDownloadLink,
       fileUrl: model.fileUrl,
+      specialText: model.specialText,
       prices: format(model.prices),
       items: format(model.items),
     },
