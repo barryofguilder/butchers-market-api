@@ -9,6 +9,7 @@ export default (model) => {
       title: model.title,
       price: model.price,
       featured: model.featured,
+      specialText: model.specialText,
       isHidden: model.isHidden,
       orderEnabled: model.orderEnabled,
       items: format(model.items),

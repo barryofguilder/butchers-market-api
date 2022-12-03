@@ -10,6 +10,7 @@ const createModel = (sequelize, DataTypes) => {
     },
     flyerDownloadLink: DataTypes.STRING,
     fileUrl: DataTypes.STRING,
+    specialText: DataTypes.STRING,
     prices: DataTypes.STRING,
     items: DataTypes.TEXT,
   });
