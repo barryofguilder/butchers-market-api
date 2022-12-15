@@ -77,6 +77,20 @@ router.post('/', async (ctx) => {
   ctx.body = ctx.app.serialize('special', special);
 });
 
+router.post('/reorder', async (ctx) => {
+  const items = JSON.parse(ctx.request.body);
+  let specials = await ctx.app.db.Special.findAll();
+
+  items.forEach(async (item, index) => {
+    let special = specials.find((i) => i.id.toString() === item.id.toString());
+    special.set({ displayOrder: index + 1 });
+    await special.save();
+  });
+
+  ctx.status = 201;
+  ctx.body = ctx.app.serialize('special', specials);
+});
+
 router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
   const attrs = ctx.request.body.data.attributes;
