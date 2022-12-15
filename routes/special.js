@@ -69,6 +69,14 @@ router.get('/:id', async (ctx) => {
 
 router.post('/', async (ctx) => {
   const attrs = ctx.request.body.data.attributes;
+  const specials = await ctx.app.db.Special.findAll({ order: [['displayOrder', 'desc']] });
+
+  if (specials.length > 0) {
+    attrs.displayOrder = specials[0].displayOrder + 1;
+  } else {
+    attrs.displayOrder = 1;
+  }
+
   const special = await ctx.app.db.Special.create(attrs);
 
   ctx.status = 201;
