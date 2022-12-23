@@ -4,7 +4,6 @@ import event from './event';
 import meatBundle from './meat-bundle';
 import menu from './menu';
 import packageBundle from './package-bundle';
-import performance from './performance';
 import review from './review';
 import special from './special';
 
@@ -15,7 +14,6 @@ const resources = {
   'meat-bundle': meatBundle,
   menu,
   'package-bundle': packageBundle,
-  performance,
   review,
   special,
 };
