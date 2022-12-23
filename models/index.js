@@ -8,57 +8,42 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = dbConfig[env];
 const db = {};
+let sequelize;
 
-const sequelize = new Sequelize({ ...config });
-
-async function tryConnect() {
-  console.log('trying to connect');
-  try {
-    await sequelize.authenticate();
-    console.log('Connection has been established successfully.');
-    debugger;
-  } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    debugger;
-  }
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+  sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
-tryConnect();
+fs.readdirSync(__dirname)
+  .filter((file) => {
+    return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
+  })
+  .forEach((file) => {
+    const model = require(path.join(__dirname, file))(sequelize);
+    db[model.name] = model;
+  });
 
-// if (config.use_env_variable) {
-//   sequelize = new Sequelize(process.env[config.use_env_variable], config);
-// } else {
-//   sequelize = new Sequelize(config.database, config.username, config.password, config);
-// }
+Object.keys(db).forEach((modelName) => {
+  const Model = db[modelName];
 
-// fs.readdirSync(__dirname)
-//   .filter((file) => {
-//     return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
-//   })
-//   .forEach((file) => {
-//     const model = require(path.join(__dirname, file))(sequelize);
-//     db[model.name] = model;
-//   });
+  if (Model.associate) {
+    Model.associate(db);
+  }
 
-// Object.keys(db).forEach((modelName) => {
-//   const Model = db[modelName];
+  Model.findOrFail = async (id) => {
+    let m = await Model.findByPk(id);
 
-//   if (Model.associate) {
-//     Model.associate(db);
-//   }
+    if (m === null) {
+      throw new NotFoundError(modelName, id);
+    }
 
-//   Model.findOrFail = async (id) => {
-//     let m = await Model.findByPk(id);
+    return m;
+  };
+});
 
-//     if (m === null) {
-//       throw new NotFoundError(modelName, id);
-//     }
-
-//     return m;
-//   };
-// });
-
-// db.sequelize = sequelize;
-// db.Sequelize = Sequelize;
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
 
 export default db;
