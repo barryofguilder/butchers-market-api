@@ -278,22 +278,22 @@ Resources:
         - Value: ButcherMarket
           Key: App
 
-  ListenerRule0:
-    Type: AWS::ElasticLoadBalancingV2::ListenerRule
-    Properties:
-      Actions:
-        - Type: forward
-          Order: 1
-          TargetGroupArn: !Ref TargetGroup
-      ListenerArn: !Ref AlbListenerArn
-      Conditions:
-        - Field: host-header
-          Values:
-            - !Ref HostedZoneName
-        - Field: path-pattern
-          Values:
-            - !Ref PathPatternUrl
-      Priority: !Ref PathPriority
+  # ListenerRule0:
+  #   Type: AWS::ElasticLoadBalancingV2::ListenerRule
+  #   Properties:
+  #     Actions:
+  #       - Type: forward
+  #         Order: 1
+  #         TargetGroupArn: !Ref TargetGroup
+  #     ListenerArn: !Ref AlbListenerArn
+  #     Conditions:
+  #       - Field: host-header
+  #         Values:
+  #           - !Ref HostedZoneName
+  #       - Field: path-pattern
+  #         Values:
+  #           - !Ref PathPatternUrl
+  #     Priority: !Ref PathPriority
 
   LogGroup:
     Type: AWS::Logs::LogGroup
