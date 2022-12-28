@@ -1,0 +1,84 @@
+name: Deploy API
+
+on:
+  # `pull_request` is only temporary
+  pull_request:
+  workflow_dispatch:
+    # inputs:
+    #   region:
+    #     description: 'AWS Region'
+    #     required: false
+    #     default: 'us-east-1'
+
+jobs:
+  cluster:
+    name: Deploy stack to AWS
+    runs-on: ubuntu-latest
+    outputs:
+      env-name: ${{ steps.env-name.outputs.environment }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Get NPM Package Version
+      id: package-version
+      uses: martinbeentjes/npm-get-version-action@v1.2.3
+
+    - name: Configure AWS credentials
+      id: creds
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+        # aws-region: ${{ github.event.inputs.region }}
+
+    # - name: Configure environment name
+    #   id: env-name
+    #   env:
+    #     REPO: ${{ github.repository }}
+    #   run: |
+    #     ENVIRONMENT=`echo $REPO | tr "/" "-"`
+    #     echo "Environment name: $ENVIRONMENT"
+    #     echo "::set-output name=environment::$ENVIRONMENT"
+
+    - name: Deploy Amazon EKS Cluster
+      id: eks-cluster
+      uses: aws-actions/aws-cloudformation-github-deploy@master
+      with:
+        name: butcher-api-cluster
+        template: deploy/main.yaml
+        no-fail-on-empty-changeset: "1"
+        capabilities: CAPABILITY_NAMED_IAM
+        parameter-overrides: >-
+          DbHost=${{ secrets.DB_HOST }},
+          DbUser=${{ secrets.DB_USER }},
+          DbPass=${{ secrets.DB_PASS }},
+          DbName=${{ secrets.DB_NAME }},
+          TokenUser=${{ secrets.TOKEN_USER }},
+          TokenPass=${{ secrets.TOKEN_PASS }},
+          TokenSecret=${{ secrets.TOKEN_SECRET }},
+          FeedbackEmailFrom=${{ secrets.FEEDBACK_EMAIL_FROM }},
+          FeedbackEmailTo=${{ secrets.FEEDBACK_EMAIL_TO }},
+          RecaptchaKey=${{ secrets.RECAPTCHA_KEY }},
+          AwsRegion=${{ github.event.inputs.region }},
+          VPC=${{ secrets.AWS_VPC }},
+          SubnetA=${{ secrets.AWS_SUBNET_A }},
+          SubnetB=${{ secrets.AWS_SUBNET_B }},
+          SecurityGroup=${{ secrets.AWS_SECURITY_GROUP }},
+          HostedZoneName=${{ secrets.AWS_HOSTED_ZONE_NAME }},
+          AlbListenerArn=${{ secrets.AWS_ALB_LISTENER_ARN }},
+          Image=${{ secrets.IMAGE }}:${{ steps.package-version.outputs.current-version }}
+
+        # FeedbackEmailSubject=${{ secrets.FEEDBACK_EMAIL_SUBJECT }},
+
+
+        # AvailabilityZones=${{ github.event.inputs.region }}a,
+        # AvailabilityZones=${{ github.event.inputs.region }}c,
+        # KeyPairName=${{ github.event.inputs.keypair }},
+        # NumberOfAZs=2,
+        # ProvisionBastionHost=Disabled,
+        # EKSPublicAccessEndpoint=Enabled,
+        # EKSPrivateAccessEndpoint=Enabled,
+        # RemoteAccessCIDR=0.0.0.0/0
