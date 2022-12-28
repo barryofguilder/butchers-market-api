@@ -64,8 +64,10 @@ Parameters:
   AutoScalingTargetValue:
     Type: Number
     Default: 75
-  AlbListenerArn:
+  LoadBalancerArn:
     Type: String
+  # ListenerArn:
+  #   Type: String
   Image:
     Type: String
   RetentionInDays:
@@ -118,8 +120,6 @@ Resources:
 
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
-    # Makes sure the log group is created before it is used.
-    DependsOn: LogGroup
     Properties:
       # Name of the task definition. Subsequent versions of the task definition are grouped together under this name.
       Family: !Sub "${ServiceName}-td"
@@ -229,9 +229,6 @@ Resources:
 
   Service:
     Type: AWS::ECS::Service
-    # This dependency is needed so that the load balancer is setup correctly in time
-    DependsOn:
-      - TargetGroup
     Properties:
       ServiceName: !Ref ServiceName
       Cluster: !Ref Cluster
@@ -246,7 +243,8 @@ Resources:
       NetworkConfiguration:
         AwsvpcConfiguration:
           # change to DISABLED if you're using private subnets that have access to a NAT gateway
-          AssignPublicIp: DISABLED
+          # AssignPublicIp: DISABLED
+          AssignPublicIp: ENABLED
           Subnets:
             - !Ref SubnetA
             - !Ref SubnetB
@@ -278,22 +276,42 @@ Resources:
         - Value: ButcherMarket
           Key: App
 
-  # ListenerRule0:
-  #   Type: AWS::ElasticLoadBalancingV2::ListenerRule
+  # LoadBalancer:
+  #   Type: 'AWS::ElasticLoadBalancingV2::LoadBalancer'
   #   Properties:
-  #     Actions:
-  #       - Type: forward
-  #         Order: 1
-  #         TargetGroupArn: !Ref TargetGroup
-  #     ListenerArn: !Ref AlbListenerArn
-  #     Conditions:
-  #       - Field: host-header
-  #         Values:
-  #           - !Ref HostedZoneName
-  #       - Field: path-pattern
-  #         Values:
-  #           - !Ref PathPatternUrl
-  #     Priority: !Ref PathPriority
+  #     IpAddressType: ipv4
+  #     Scheme: internet-facing
+  #     Subnets:
+  #       - !Ref SubnetA
+  #       - !Ref SubnetB
+
+  # TODO: This should be HTTPS in the future once it's setup
+  Listener:
+    Type: 'AWS::ElasticLoadBalancingV2::Listener'
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref LoadBalancerArn
+      Port: '8000'
+      Protocol: HTTP
+
+  ListenerRule0:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - Type: forward
+          Order: 1
+          TargetGroupArn: !Ref TargetGroup
+      ListenerArn: !Ref Listener
+      Conditions:
+        - Field: path-pattern
+          Values:
+            - !Ref PathPatternUrl
+        # - Field: host-header
+        #   Values:
+        #     - !Ref HostedZoneName
+      Priority: !Ref PathPriority
 
   LogGroup:
     Type: AWS::Logs::LogGroup

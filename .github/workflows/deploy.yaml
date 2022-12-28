@@ -62,15 +62,19 @@ jobs:
           FeedbackEmailFrom=${{ secrets.FEEDBACK_EMAIL_FROM }},
           FeedbackEmailTo=${{ secrets.FEEDBACK_EMAIL_TO }},
           RecaptchaKey=${{ secrets.RECAPTCHA_KEY }},
-          AwsRegion=${{ github.event.inputs.region }},
+          AwsRegion=us-east-1,
           VPC=${{ secrets.AWS_VPC }},
           SubnetA=${{ secrets.AWS_SUBNET_A }},
           SubnetB=${{ secrets.AWS_SUBNET_B }},
           SecurityGroup=${{ secrets.AWS_SECURITY_GROUP }},
           HostedZoneName=${{ secrets.AWS_HOSTED_ZONE_NAME }},
-          AlbListenerArn=${{ secrets.AWS_ALB_LISTENER_ARN }},
-          Image=${{ secrets.IMAGE }}:${{ steps.package-version.outputs.current-version }}
+          LoadBalancerArn=${{ secrets.AWS_LOAD_BALANCER_ARN }},
+          Image=${{ secrets.IMAGE }}:0.0.1
 
+        #Image=${{ secrets.IMAGE }}:${{ steps.package-version.outputs.current-version }}
+
+        # ListenerArn=${{ secrets.AWS_LISTENER_ARN }},
+        # AwsRegion=${{ github.event.inputs.region }},
         # FeedbackEmailSubject=${{ secrets.FEEDBACK_EMAIL_SUBJECT }},
 
 
