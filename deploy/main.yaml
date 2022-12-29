@@ -52,7 +52,7 @@ Parameters:
     Default: 3000
   HealthCheckPath:
     Type: String
-    Default: /api/status
+    Default: /api/
   HostedZoneName:
     Type: String
   MinContainers:
@@ -187,7 +187,12 @@ Resources:
               Service: ecs-tasks.amazonaws.com
             Action: "sts:AssumeRole"
       ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/AmazonECS_FullAccess"
+        - "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
         - "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+      Tags:
+        - Key: Name
+          Value: !Ref ServiceName
 
   # TaskRole:
   #   Type: AWS::IAM::Role
@@ -293,7 +298,7 @@ Resources:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref LoadBalancerArn
-      Port: '8000'
+      Port: '80'
       Protocol: HTTP
 
   ListenerRule0:
@@ -347,4 +352,5 @@ Resources:
 Outputs:
   Endpoint:
     Description: Endpoint
-    Value: !Sub "https://${HostedZoneName}"
+    Value: !Sub "http://${HostedZoneName}"
+    # Value: !Sub "https://${HostedZoneName}"
