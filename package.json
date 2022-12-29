@@ -39,6 +39,9 @@
     "nodemon": "^2.0.19",
     "prettier": "2.1.2"
   },
+  "engines": {
+    "node": "16.17.0"
+  },
   "volta": {
     "node": "16.17.0"
   }
