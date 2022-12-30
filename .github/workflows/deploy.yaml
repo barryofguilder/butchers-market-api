@@ -2,7 +2,7 @@ name: Deploy API
 
 on:
   # `pull_request` is only temporary
-  pull_request:
+  # pull_request:
   workflow_dispatch:
     # inputs:
     #   region:
@@ -72,17 +72,5 @@ jobs:
           Image=${{ secrets.IMAGE }}:0.0.3
 
         #Image=${{ secrets.IMAGE }}:${{ steps.package-version.outputs.current-version }}
-
-        # ListenerArn=${{ secrets.AWS_LISTENER_ARN }},
         # AwsRegion=${{ github.event.inputs.region }},
         # FeedbackEmailSubject=${{ secrets.FEEDBACK_EMAIL_SUBJECT }},
-
-
-        # AvailabilityZones=${{ github.event.inputs.region }}a,
-        # AvailabilityZones=${{ github.event.inputs.region }}c,
-        # KeyPairName=${{ github.event.inputs.keypair }},
-        # NumberOfAZs=2,
-        # ProvisionBastionHost=Disabled,
-        # EKSPublicAccessEndpoint=Enabled,
-        # EKSPrivateAccessEndpoint=Enabled,
-        # RemoteAccessCIDR=0.0.0.0/0
