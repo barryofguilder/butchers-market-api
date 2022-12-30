@@ -34,7 +34,7 @@ router.patch('/:id', async (ctx) => {
   try {
     // Delete the old image path
     if (deliItem.imageUrl && deliItem.imageUrl !== attrs.imageUrl) {
-      deleteUploadedFile(deliItem.imageUrl);
+      await deleteUploadedFile(deliItem.imageUrl);
     }
   } catch (error) {
     console.error(error);
@@ -51,7 +51,7 @@ router.del('/:id', async (ctx) => {
   const deliItem = await ctx.app.db.DeliItem.findOrFail(id);
 
   try {
-    deleteUploadedFile(deliItem.imageUrl);
+    await deleteUploadedFile(deliItem.imageUrl);
   } catch (error) {
     console.error(error);
   }

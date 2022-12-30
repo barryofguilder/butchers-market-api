@@ -78,7 +78,7 @@ router.patch('/:id', async (ctx) => {
 
   // Delete the old image path
   if (event.imageUrl && event.imageUrl !== attrs.imageUrl) {
-    deleteUploadedFile(event.imageUrl);
+    await deleteUploadedFile(event.imageUrl);
   }
 
   event.set(attrs);
@@ -91,7 +91,7 @@ router.del('/:id', async (ctx) => {
   const id = ctx.params.id;
   const event = await ctx.app.db.Event.findOrFail(id);
 
-  deleteUploadedFile(event.imageUrl);
+  await deleteUploadedFile(event.imageUrl);
   await event.destroy();
 
   ctx.status = 204;

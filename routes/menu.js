@@ -24,7 +24,7 @@ router.patch('/:id', async (ctx) => {
   try {
     // Delete the old file path
     if (menu.fileUrl && menu.fileUrl !== attrs.fileUrl) {
-      deleteUploadedFile(menu.fileUrl);
+      await deleteUploadedFile(menu.fileUrl);
     }
   } catch (error) {
     console.error(error);
