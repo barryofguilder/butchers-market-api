@@ -141,7 +141,7 @@ Resources:
           Environment:
             - Name: "AWS_REGION"
               Value: !Ref AwsRegion
-            - Name: "NODE_ENVIRONMENT"
+            - Name: "NODE_ENV"
               Value: production
             - Name: "PORT"
               Value: !Ref ContainerPort
