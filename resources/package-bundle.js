@@ -7,7 +7,6 @@ export default (model) => {
     attributes: {
       displayOrder: model.displayOrder,
       title: model.title,
-      flyerDownloadLink: model.flyerDownloadLink,
       fileUrl: model.fileUrl,
       specialText: model.specialText,
       prices: format(model.prices),
