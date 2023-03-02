@@ -6,6 +6,7 @@ export default {
     dialect: 'postgres',
     url: process.env.DB_URL,
     dialectOptions: {
+      // Needed when running outside of Render.
       ssl: true,
     },
   },
@@ -13,8 +14,8 @@ export default {
   production: {
     dialect: 'postgres',
     url: process.env.DB_URL,
-    dialectOptions: {
-      ssl: true,
-    },
+    // dialectOptions: {
+    //   ssl: true,
+    // },
   },
 };
