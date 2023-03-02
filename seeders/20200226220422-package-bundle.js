@@ -4,7 +4,6 @@ export default {
       {
         displayOrder: 1,
         title: "Mix N' Match",
-        flyerDownloadLink: 'docs/bundles-mixnmatch.pdf',
         prices: `
           Pick 5 for $53|
           Pick 10 for $99|
@@ -44,7 +43,6 @@ export default {
       {
         displayOrder: 2,
         title: "Ice Box Mix N' Match",
-        flyerDownloadLink: 'docs/iceboxflyer.pdf',
         prices: `
           Pick 5 for $19.99|
           Pick 10 for $37.99|
