@@ -12,7 +12,8 @@
     "db:migrate": "sequelize-esm db:migrate",
     "db:seed": "sequelize-esm db:seed:all",
     "db:seed:undo": "sequelize-esm db:seed:undo",
-    "db:unseed": "sequelize-esm db:seed:undo:all"
+    "db:unseed": "sequelize-esm db:seed:undo:all",
+    "prettier": "prettier --write \"**/*.js\""
   },
   "dependencies": {
     "@koa/cors": "^3.3.0",
