@@ -4,6 +4,7 @@ import koaBody from 'koa-body';
 import cors from '@koa/cors';
 import jwt from 'koa-jwt';
 
+import NAMESPACE from './constants/namespace';
 import config from './config/app';
 import router from './routes/index';
 import db from './models/index';
@@ -15,7 +16,16 @@ app.db = db;
 app.serialize = serialize;
 
 app.use(errorMiddleware);
-app.use(logger());
+
+app.use(async (ctx, next) => {
+  // Ignore logging health checks.
+  if (ctx.url === `${NAMESPACE}/`) {
+    await next();
+  } else {
+    await logger()(ctx, next);
+  }
+});
+
 app.use(cors());
 app.use(koaBody({ multipart: true }));
 
@@ -26,7 +36,7 @@ app.use(
       return true;
     }
 
-    const publicRoutes = ['/api/feedback', '/api/token'];
+    const publicRoutes = [`${NAMESPACE}/feedback`, `${NAMESPACE}/token`];
 
     return publicRoutes.some((route) => {
       return url.startsWith(route);
