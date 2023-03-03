@@ -1,5 +1,9 @@
-node_modules
-.env
+/node_modules/
+/.env
+
+# Misc
+/.eslintcache
+/npm-debug.log*
 
 # Mac stuff
 .DS_Store
