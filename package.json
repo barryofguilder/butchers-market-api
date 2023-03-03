@@ -13,6 +13,7 @@
     "db:seed": "sequelize-esm db:seed:all",
     "db:seed:undo": "sequelize-esm db:seed:undo",
     "db:unseed": "sequelize-esm db:seed:undo:all",
+    "lint": "eslint . --cache",
     "prettier": "prettier --write \"**/*.js\""
   },
   "dependencies": {
