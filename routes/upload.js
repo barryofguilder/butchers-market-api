@@ -12,7 +12,7 @@ router.post('/', async (ctx) => {
 
   try {
     // Delete local file
-    await fs.unlinkSync(file.path);
+    await fs.unlinkSync(file.filepath);
   } catch (error) {
     console.error('Failed to delete the local file being uploaded');
   }
