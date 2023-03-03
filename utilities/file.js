@@ -3,7 +3,11 @@ import path from 'path';
 import S3 from 'aws-sdk/clients/s3';
 
 const UPLOAD_DIRECTORY = process.env.UPLOAD_DIR;
-const s3 = new S3({ region: process.env.AWS_REGION });
+const s3 = new S3({
+  region: process.env.AWS_REGION,
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+});
 const IMAGE_EXTENTIONS = ['gif', 'jpg', 'jpeg', 'png'];
 const PDF_EXTENTIONS = ['pdf'];
 
