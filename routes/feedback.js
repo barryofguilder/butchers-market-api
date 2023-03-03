@@ -97,17 +97,22 @@ async function sendMail(name, email, message) {
 
   try {
     let transporter = nodemailer.createTransport({
-      sendmail: true,
-      path: '/usr/sbin/sendmail',
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASSWORD,
+      },
     });
 
-    await transporter.sendMail({
+    const response = await transporter.sendMail({
       from: process.env.FEEDBACK_EMAIL_FROM,
       to: process.env.FEEDBACK_EMAIL_TO,
       replyTo: email,
       subject: process.env.FEEDBACK_EMAIL_SUBJECT,
       text,
     });
+
+    console.log('Email response: ', response);
 
     return true;
   } catch (ex) {
