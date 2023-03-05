@@ -4,99 +4,99 @@ export default {
       {
         displayOrder: 1,
         title: "Mix N' Match",
+        fileUrl: 'bundles-mixnmatch_20230109.pdf',
         prices: `
-          Pick 5 for $53|
-          Pick 10 for $99|
-          Pick 20 for $195
+          Pick 5 for $68|
+          Pick 10 for $135|
+          Pick 20 for $259
         `,
         items: `
-          2 (7 oz.) Beef Ribeye Steaks|
-          2 (7 oz.) Beef N.Y. Strip Steaks|
-          2 lbs. Beef Chuck Roast|
-          2 lbs. Beef Chuck Tender Roast|
-          2 lbs. Beef Sirloin Tip Roast|
+          2 - 10oz. Sirloin Steaks|
+          2 lbs. Chuck Roast|
+          2 lbs. Sirloin Tip Roast|
           2 lbs. Beef Cube Steaks|
-          2 lbs. Beef Stew|
-          2 ½ lbs. Beef Ground Chuck|
-          2 ¼ lbs. Beef Ground Round|
+          2 lbs. Beef Stew Meat|
+          2 ½ lbs. Ground Chuck|
+          2 ¼ lbs. Ground Round|
           2 ½ lbs. Boneless Pork Chops|
           5 lbs. Boston Butt Pork Roast|
           4 lbs. Country Style Pork Ribs|
-          2 ½ lbs. Baby Back Pork Ribs|
           3 lbs. Fresh Made Pork Sausage|
-          3 lbs. Smoked Pork Sausages|
-          3 lbs. Bratwurst Sausages|
-          3 lbs. Italian Sausages|
-          2 ½ lbs. Sliced Slab Bacon|
-          2 ½ lbs. Boneless Chicken Breast|
-          2 ½ lbs. Boneless Chicken Tenders|
-          4 ½ lbs. Split Chicken Breast|
-          5 lbs. Chicken Wings|
+          2 lbs. Fresh Made Beef Sausage|
+          3 lb. Bratwurst|
+          3 lb. Italian Sausages|
+          3 lbs. Smoked Sausages|
+          2 lbs. Sliced Smoked Bacon|
+          2 lbs. Boneless Chicken Breast|
+          2 lbs. Boneless Chicken Tenders|
+          5 lbs. Bone-In Chicken Breast|
+          2 ¼ lbs. Fresh Jumbo Wings|
           2 lbs. Tilapia Fish Fillets|
           2 lbs. Swai Fish Fillets|
           2 lbs. Catfish Fillets|
-          2 lbs. Perch Fish Fillets|
-          2 lbs. Cod Fish Fillets|
-          1 lb. Cooked Peeled Shrimp
+          3 lbs. Cooked Crawfish|
+          1 lb. Cooked Peeled Shrimp|
+          2 Lobster Tails
         `,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       {
         displayOrder: 2,
         title: "Ice Box Mix N' Match",
+        fileUrl: 'iceboxflyer_20230125.pdf',
         prices: `
-          Pick 5 for $19.99|
-          Pick 10 for $37.99|
-          Pick 20 for $75.99
+          Pick 5 for $23.99|
+          Pick 10 for $45.99|
+          Pick 20 for $89.99
         `,
         items: `
-          Spicy Chicken Tenders|
-          Popcorn Chicken|
+          Pizza Rolls|
+          Mini Combo Pizzas|
+          Mini Pepperoni Pizzas|
+          Mini Cheese Pizzas|
           Breaded Chicken Tenders|
+          Spicy Chicken Tenders|
           Breaded Chicken Nuggets|
-          Breaded Chicken Wings|
-          Meatballs|
+          Breaded Popcorn Chicken|
           Corndogs|
           Mini Corndogs|
-          Sausage Biscuits|
-          Sausage Croissants|
-          Sausage, Egg, & Cheese Biscuits|
-          Chicken Biscuits|
-          Canadian Bacon & Egg Muffins|
+          Cooked Sausage Patties|
+          Belgian Waffles|
+          Sausage, Egg, Cheese Biscuit|
+          Chicken Biscuit|
+          Canadian Bacon Muffin|
           Cheeseburger Sliders|
           Chicken Sliders|
-          Chicken Tamales|
-          Pizza Bites|
-          Pizza Sticks|
-          Cooked Sausage Patties|
-          Pancake/Sausage on a Stick|
-          Hash Brown Patties|
-          Cheese Sticks|
-          Jalapeno Cheese Poppers|
-          Crinkle Cut Fries|
-          Tater Tots|
-          Seasoned Potato Wedges|
-          Seasoned Potato Fries|
-          Steak Cut Fries|
+          Buffalo Chicken Sliders|
+          Breaded Onion Rings|
           Shoestring Fries|
-          Mixed Vegetables|
-          California Blend Mix Vegetables|
-          Cut Green Beans|
-          Breaded Okra|
-          Sliced Yellow Squash|
+          Crinkle Cut Fries|
+          Waffle Cut Fries|
+          Seasoned Potato Wedges|
+          Tater Tots|
+          Hashbrowns|
+          Shoepeg Corn|
           Corn on the Cob|
-          Shoepeg Cut Corn|
-          Corn Nuggets|
-          Onion Rings|
+          Green Beans|
+          Blackeye Peas|
+          Crowder Peas|
+          Butter Peas|
+          Green Peas|
+          Mixed Vegetables|
+          California Mix Veggies|
+          Sliced Yellow Squash|
+          Breaded Okra|
           Hush Puppies|
-          Yeast Rolls|
-          Garlic Cheese Breadstick|
-          Garlic Texas Toast|
           Southern Style Biscuits|
-          Belgian Waffles|
+          Dinner Rolls|
+          Garlic Bread Sticks|
+          Garlic Texas Toast|
           Cinnamon Rolls|
-          Chocolate Chip Cookies|
-          Sugar Cookies
+          Chocolate Chip Cookies
         `,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ]);
   },
