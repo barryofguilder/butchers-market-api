@@ -15,8 +15,10 @@ export default {
   },
 
   async down(queryInterface, Sequelize) {
-    return Promise.all([
-      queryInterface.removeColumn('PackageBundles', 'fileUrl', { transaction: t }),
-    ]);
+    await queryInterface.sequelize.transaction((t) => {
+      return Promise.all([
+        queryInterface.removeColumn('PackageBundles', 'fileUrl', { transaction: t }),
+      ]);
+    });
   },
 };
