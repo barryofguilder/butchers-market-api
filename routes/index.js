@@ -2,7 +2,6 @@ import Router from 'koa-router';
 
 import status from './status';
 import deliItem from './deli-item';
-import event from './event';
 import feedback from './feedback';
 import hour from './hour';
 import meatBundle from './meat-bundle';
@@ -19,7 +18,6 @@ const router = new Router();
 
 router.use(`${NAMESPACE}/`, status);
 router.use(`${NAMESPACE}/deli-items`, deliItem);
-router.use(`${NAMESPACE}/events`, event);
 router.use(`${NAMESPACE}/feedback`, feedback);
 router.use(`${NAMESPACE}/hours`, hour);
 router.use(`${NAMESPACE}/meat-bundles`, meatBundle);
