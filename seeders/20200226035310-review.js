@@ -7,6 +7,8 @@ export default {
         text: 'Great place for quality meat and great burgers',
         source: 'Trip Advisor Contributor',
         url: 'http://tripadvisor.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       {
         reviewer: 'Dan Peeples',
@@ -14,6 +16,8 @@ export default {
         text: 'Great place to buy meat',
         source: 'Trip Advisor Contributor',
         url: 'http://tripadvisor.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       {
         reviewer: 'Nathan Puckett',
@@ -21,6 +25,8 @@ export default {
         text: 'Quality and More Quality',
         source: 'Trip Advisor Contributor',
         url: 'http://tripadvisor.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ]);
   },
