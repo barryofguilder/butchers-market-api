@@ -8,15 +8,17 @@ export default {
   },
 
   async down(queryInterface, Sequelize) {
-    return Promise.all([
-      queryInterface.addColumn(
-        'PackageBundles',
-        'flyerDownloadLink',
-        {
-          type: Sequelize.DataTypes.STRING,
-        },
-        { transaction: t }
-      ),
-    ]);
+    await queryInterface.sequelize.transaction((t) => {
+      return Promise.all([
+        queryInterface.addColumn(
+          'PackageBundles',
+          'flyerDownloadLink',
+          {
+            type: Sequelize.DataTypes.STRING,
+          },
+          { transaction: t }
+        ),
+      ]);
+    });
   },
 };
