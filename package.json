@@ -19,7 +19,7 @@
   "dependencies": {
     "@aws-sdk/lib-storage": "^3.282.0",
     "@koa/cors": "^4.0.0",
-    "aws-sdk": "^2.1328.0",
+    "aws-sdk": "^2.1354.0",
     "date-fns": "^2.29.3",
     "dotenv": "^16.0.3",
     "esm": "^3.2.25",
