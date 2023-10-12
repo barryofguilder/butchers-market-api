@@ -10,6 +10,7 @@ module.exports = (sequelize) => {
       },
     },
     ingredients: Sequelize.STRING,
+    isHidden: Sequelize.BOOLEAN,
     imageUrl: Sequelize.STRING,
   });
 

@@ -7,6 +7,7 @@ export default (model) => {
     attributes: {
       title: model.title,
       ingredients: model.ingredients,
+      isHidden: model.isHidden,
       imageUrl: model.imageUrl,
     },
     links: {

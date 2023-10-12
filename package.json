@@ -9,6 +9,7 @@
     "start": "node index.js",
     "start:dev": "nodemon index.js",
     "start:debug": "nodemon --inspect index.js",
+    "db:create": "sequelize-esm db:create",
     "db:migrate": "sequelize-esm db:migrate",
     "db:seed": "sequelize-esm db:seed:all",
     "db:seed:undo": "sequelize-esm db:seed:undo",
