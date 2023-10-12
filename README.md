@@ -22,6 +22,7 @@ You will need the following things properly installed on your computer.
 
 ## Create Database
 
+- `npm run db:create`
 - `npm run db:migrate`
 - `npm run db:seed`
 

@@ -4,7 +4,14 @@ import { deleteUploadedFile } from '../utilities/file';
 const router = new Router();
 
 router.get('/', async (ctx) => {
-  let deliItems = await ctx.app.db.DeliItem.findAll({ order: [['title', 'asc']] });
+  const isHidden = ctx.query['filter[isHidden]'];
+  let where = {};
+
+  if (isHidden !== undefined) {
+    where.isHidden = isHidden === 'true';
+  }
+
+  const deliItems = await ctx.app.db.DeliItem.findAll({ where, order: [['title', 'asc']] });
 
   ctx.body = ctx.app.serialize('deli-item', deliItems);
 });
