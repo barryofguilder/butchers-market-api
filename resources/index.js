@@ -1,4 +1,5 @@
 import deliItem from './deli-item';
+import featureFlag from './feature-flag';
 import hour from './hour';
 import grabAndGo from './grab-and-go';
 import meatBundle from './meat-bundle';
@@ -9,6 +10,7 @@ import special from './special';
 
 const resources = {
   'deli-item': deliItem,
+  'feature-flag': featureFlag,
   hour,
   'grab-and-go': grabAndGo,
   'meat-bundle': meatBundle,
