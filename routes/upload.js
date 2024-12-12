@@ -1,6 +1,11 @@
 import Router from 'koa-router';
-import fs from 'fs';
-import { uploadFile } from '../utilities/file';
+import {
+  deleteLocalFile,
+  isPdf,
+  optimizeImage,
+  uploadFile,
+  uploadOptimizedFile,
+} from '../utilities/file';
 
 const router = new Router();
 
@@ -8,13 +13,29 @@ router.post('/', async (ctx) => {
   const file = ctx.request.files.file;
   const fileName = ctx.request.body.generatedFileName;
 
-  await uploadFile(file, fileName);
+  if (isPdf(fileName)) {
+    await uploadFile(file, fileName);
+    await deleteLocalFile(file);
+  } else {
+    const buffer = await optimizeImage(file);
+    await deleteLocalFile(file);
 
-  try {
-    // Delete local file
-    await fs.unlinkSync(file.filepath);
-  } catch (error) {
-    console.error('Failed to delete the local file being uploaded');
+    if (buffer === null) {
+      ctx.status = 500;
+
+      ctx.body = {
+        errors: [
+          {
+            code: 500,
+            title: 'Internal Server Error',
+            detail: 'Failed to optimize image',
+          },
+        ],
+      };
+      return;
+    }
+
+    await uploadOptimizedFile(buffer, fileName);
   }
 
   ctx.status = 201;
