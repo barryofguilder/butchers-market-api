@@ -1,5 +1,4 @@
 import Router from 'koa-router';
-import fetch from 'node-fetch';
 import nodemailer from 'nodemailer';
 
 import { isBlank } from '../utilities/is-blank';
