@@ -12,6 +12,9 @@ const S3_CONFIG = {
 const IMAGE_EXTENTIONS = ['gif', 'jpg', 'jpeg', 'png'];
 const PDF_EXTENTIONS = ['pdf'];
 const OPTIMIZE_API_KEY = process.env.OPTIMIZE_API_KEY;
+const OPTIMIZE_IMAGE_MAX_DIMENSION = process.env.OPTIMIZE_IMAGE_MAX_DIMENSION
+  ? parseInt(process.env.OPTIMIZE_IMAGE_MAX_DIMENSION)
+  : 1024;
 
 export function isPdf(filePath) {
   const extension = path.extname(filePath).replace('.', '');
@@ -67,7 +70,7 @@ export async function deleteUploadedFile(fileName) {
   }
 }
 
-export async function optimizeImage(file, fileName) {
+export async function optimizeImage(file) {
   const fileStream = fs.createReadStream(file.filepath);
   const apiKey = Buffer.from(OPTIMIZE_API_KEY).toString('base64');
 
@@ -105,7 +108,10 @@ export async function optimizeImage(file, fileName) {
 
     const { output } = optimizeJson;
 
-    if (output.width > 1024 || output.height > 1024) {
+    if (
+      output.width > OPTIMIZE_IMAGE_MAX_DIMENSION ||
+      output.height > OPTIMIZE_IMAGE_MAX_DIMENSION
+    ) {
       const options = {
         resize: {
           method: 'scale',
@@ -114,9 +120,9 @@ export async function optimizeImage(file, fileName) {
       const useWidth = output.width > output.height;
 
       if (useWidth) {
-        options.resize.width = 1024;
+        options.resize.width = OPTIMIZE_IMAGE_MAX_DIMENSION;
       } else {
-        options.resize.height = 1024;
+        options.resize.height = OPTIMIZE_IMAGE_MAX_DIMENSION;
       }
 
       const resizeResponse = await fetch(output.url, {
