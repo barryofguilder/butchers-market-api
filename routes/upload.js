@@ -7,13 +7,16 @@ import {
   uploadOptimizedFile,
 } from '../utilities/file';
 
+const OPTIMIZE_IMAGES = process.env.OPTIMIZE_IMAGES === 'false' ? false : true;
+
 const router = new Router();
 
 router.post('/', async (ctx) => {
+  const noOptimize = ctx.query['noOptimize'] !== undefined || OPTIMIZE_IMAGES === false;
   const file = ctx.request.files.file;
   const fileName = ctx.request.body.generatedFileName;
 
-  if (isPdf(fileName)) {
+  if (isPdf(fileName) || noOptimize) {
     await uploadFile(file, fileName);
     await deleteLocalFile(file);
   } else {
