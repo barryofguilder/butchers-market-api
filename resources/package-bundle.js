@@ -11,6 +11,8 @@ export default (model) => {
       specialText: model.specialText,
       prices: format(model.prices),
       items: format(model.items),
+      createdAt: model.createdAt,
+      updatedAt: model.updatedAt,
     },
     links: {
       self: `${NAMESPACE}/package-bundles/${model.id}`,

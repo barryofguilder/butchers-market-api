@@ -6,6 +6,7 @@ export default (model) => {
     id: model.id,
     attributes: {
       fileUrl: model.fileUrl,
+      createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     },
     links: {

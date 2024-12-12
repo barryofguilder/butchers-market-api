@@ -13,6 +13,8 @@ export default (model) => {
       isHidden: model.isHidden,
       orderEnabled: model.orderEnabled,
       items: format(model.items),
+      createdAt: model.createdAt,
+      updatedAt: model.updatedAt,
     },
     links: {
       self: `${NAMESPACE}/meat-bundles/${model.id}`,

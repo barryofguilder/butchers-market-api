@@ -10,6 +10,8 @@ export default (model) => {
       imageUrl: model.imageUrl,
       featured: model.featured,
       isSoldOut: model.isSoldOut,
+      createdAt: model.createdAt,
+      updatedAt: model.updatedAt,
     },
     links: {
       self: `${NAMESPACE}/grab-and-gos/${model.id}`,
