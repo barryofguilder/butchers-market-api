@@ -14,6 +14,8 @@ export default (model) => {
       activeEndDate: model.activeEndDate,
       isSoldOut: model.isSoldOut,
       isHidden: model.isHidden,
+      createdAt: model.createdAt,
+      updatedAt: model.updatedAt,
     },
     links: {
       self: `${NAMESPACE}/specials/${model.id}`,

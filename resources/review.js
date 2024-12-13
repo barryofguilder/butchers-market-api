@@ -10,6 +10,8 @@ export default (model) => {
       text: model.text,
       source: model.source,
       url: model.url,
+      createdAt: model.createdAt,
+      updatedAt: model.updatedAt,
     },
     links: {
       self: `${NAMESPACE}/reviews/${model.id}`,

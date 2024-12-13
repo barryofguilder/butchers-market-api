@@ -9,6 +9,8 @@ export default (model) => {
       ingredients: model.ingredients,
       isHidden: model.isHidden,
       imageUrl: model.imageUrl,
+      createdAt: model.createdAt,
+      updatedAt: model.updatedAt,
     },
     links: {
       self: `${NAMESPACE}/deli-items/${model.id}`,
