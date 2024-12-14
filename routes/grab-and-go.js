@@ -5,17 +5,7 @@ import { deleteUploadedFile } from '../utilities/file';
 const router = new Router();
 
 router.get('/', async (ctx) => {
-  const featured = ctx.query['filter[featured]'];
-  let where = {};
-
-  if (featured !== undefined) {
-    where.featured = true;
-  }
-
-  let items = await ctx.app.db.GrabAndGo.findAll({
-    where,
-    order: [['title', 'asc']],
-  });
+  let items = await ctx.app.db.GrabAndGo.findAll({ order: [['title', 'asc']] });
 
   ctx.body = ctx.app.serialize('grab-and-go', items);
 });
