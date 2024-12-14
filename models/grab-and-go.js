@@ -11,7 +11,6 @@ module.exports = (sequelize) => {
     },
     description: Sequelize.STRING,
     imageUrl: Sequelize.STRING,
-    featured: Sequelize.BOOLEAN,
     isSoldOut: Sequelize.BOOLEAN,
   });
 
