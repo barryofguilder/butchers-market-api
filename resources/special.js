@@ -12,7 +12,7 @@ export default (model) => {
       imageAltText: model.imageAltText,
       activeStartDate: model.activeStartDate,
       activeEndDate: model.activeEndDate,
-      isSoldOut: model.isSoldOut,
+      inStock: model.inStock,
       isHidden: model.isHidden,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,

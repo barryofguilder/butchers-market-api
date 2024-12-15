@@ -36,7 +36,7 @@ module.exports = (sequelize) => {
         },
       },
     },
-    isSoldOut: Sequelize.BOOLEAN,
+    inStock: Sequelize.BOOLEAN,
     isHidden: Sequelize.BOOLEAN,
   });
 

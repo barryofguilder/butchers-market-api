@@ -11,7 +11,7 @@ module.exports = (sequelize) => {
     },
     description: Sequelize.STRING,
     imageUrl: Sequelize.STRING,
-    isSoldOut: Sequelize.BOOLEAN,
+    inStock: Sequelize.BOOLEAN,
   });
 
   return GrabAndGo;
