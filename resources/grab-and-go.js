@@ -8,7 +8,7 @@ export default (model) => {
       title: model.title,
       description: model.description,
       imageUrl: model.imageUrl,
-      isSoldOut: model.isSoldOut,
+      inStock: model.inStock,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     },
