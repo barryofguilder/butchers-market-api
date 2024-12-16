@@ -7,3 +7,5 @@
 
 # Mac stuff
 .DS_Store
+
+/dist
