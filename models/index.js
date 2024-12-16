@@ -1,10 +1,17 @@
-import fs from 'fs';
-import path from 'path';
 import Sequelize from 'sequelize';
 import dbConfig from '../config/db';
 import NotFoundError from '../errors/not-found';
 
-const basename = path.basename(__filename);
+import initDeliItem from './deli-item';
+import initFeatureFlag from './feature-flag';
+import initGrabAndGo from './grab-and-go';
+import initHour from './hour';
+import initMeatBundle from './meat-bundle';
+import initMenu from './menu';
+import initPackageBundle from './package-bundle';
+import initReview from './review';
+import initSpecial from './special';
+
 const env = process.env.NODE_ENV || 'development';
 const config = dbConfig[env];
 const db = {};
@@ -16,14 +23,24 @@ if (process.env.DB_URL) {
   sequelize = new Sequelize(config);
 }
 
-fs.readdirSync(__dirname)
-  .filter((file) => {
-    return file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js';
-  })
-  .forEach((file) => {
-    const model = require(path.join(__dirname, file))(sequelize);
-    db[model.name] = model;
-  });
+const deliItem = initDeliItem(sequelize);
+db[deliItem.name] = deliItem;
+const featureFlag = initFeatureFlag(sequelize);
+db[featureFlag.name] = featureFlag;
+const grabAndGo = initGrabAndGo(sequelize);
+db[grabAndGo.name] = grabAndGo;
+const hour = initHour(sequelize);
+db[hour.name] = hour;
+const meatBundle = initMeatBundle(sequelize);
+db[meatBundle.name] = meatBundle;
+const menu = initMenu(sequelize);
+db[menu.name] = menu;
+const packageBundle = initPackageBundle(sequelize);
+db[packageBundle.name] = packageBundle;
+const review = initReview(sequelize);
+db[review.name] = review;
+const special = initSpecial(sequelize);
+db[special.name] = special;
 
 Object.keys(db).forEach((modelName) => {
   const Model = db[modelName];

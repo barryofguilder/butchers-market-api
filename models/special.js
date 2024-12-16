@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const Special = sequelize.define('Special', {
     title: {
       type: Sequelize.STRING,

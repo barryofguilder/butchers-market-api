@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const Menu = sequelize.define('Menu', {
     fileUrl: {
       type: Sequelize.STRING,

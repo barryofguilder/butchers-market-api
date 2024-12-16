@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const FeatureFlag = sequelize.define('FeatureFlag', {
     name: {
       type: Sequelize.STRING,
