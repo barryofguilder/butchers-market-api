@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import fetch from 'node-fetch';
 import { Upload } from '@aws-sdk/lib-storage';
 import { S3 } from '@aws-sdk/client-s3';
 
