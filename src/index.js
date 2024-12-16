@@ -1,6 +1,6 @@
 import Koa from 'koa';
 import logger from 'koa-logger';
-import koaBody from 'koa-body';
+import { koaBody } from 'koa-body';
 import cors from '@koa/cors';
 import jwt from 'koa-jwt';
 
@@ -27,7 +27,7 @@ app.use(async (ctx, next) => {
 });
 
 app.use(cors());
-// app.use(koaBody({ multipart: true }));
+app.use(koaBody({ multipart: true }));
 
 app.use(router.allowedMethods());
 app.use(
