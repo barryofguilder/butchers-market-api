@@ -1,5 +1,5 @@
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     return await queryInterface.bulkInsert('Hours', [
       {
         type: 'Store',
@@ -52,7 +52,7 @@ export default {
     ]);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     return await queryInterface.bulkDelete('Hours', null, {});
   },
 };

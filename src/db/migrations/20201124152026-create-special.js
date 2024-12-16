@@ -41,7 +41,7 @@ export default {
       },
     });
   },
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     return await queryInterface.dropTable('Specials');
   },
 };

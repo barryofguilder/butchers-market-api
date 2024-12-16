@@ -1,5 +1,5 @@
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     return await queryInterface.bulkInsert('Menus', [
       {
         fileUrl: 'menu10.8.22_20221008.pdf',
@@ -9,7 +9,7 @@ export default {
     ]);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     return await queryInterface.bulkDelete('Menus', null, {});
   },
 };

@@ -14,7 +14,7 @@ export default {
     });
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     return await queryInterface.sequelize.transaction((t) => {
       return Promise.all([
         queryInterface.removeColumn('MeatBundles', 'specialText', { transaction: t }),

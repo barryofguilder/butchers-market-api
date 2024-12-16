@@ -1,5 +1,5 @@
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     return await queryInterface.bulkInsert('Specials', [
       {
         title: 'Valentines Wellington',
@@ -81,7 +81,7 @@ export default {
     ]);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     return await queryInterface.bulkDelete('Menus', null, {});
   },
 };

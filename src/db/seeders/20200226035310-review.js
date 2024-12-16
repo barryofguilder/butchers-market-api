@@ -1,5 +1,5 @@
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     return await queryInterface.bulkInsert('Reviews', [
       {
         reviewer: 'Sandi O',
@@ -31,7 +31,7 @@ export default {
     ]);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     return await queryInterface.bulkDelete('Reviews', null, {});
   },
 };
