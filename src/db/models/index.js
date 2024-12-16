@@ -1,4 +1,4 @@
-import Sequelize from 'sequelize';
+import { Sequelize } from 'sequelize';
 import dbConfig from '../../config/db';
 import NotFoundError from '../../errors/not-found';
 
@@ -12,13 +12,13 @@ import initPackageBundle from './package-bundle';
 import initReview from './review';
 import initSpecial from './special';
 
-const env = process.env.NODE_ENV || 'development';
+const env = import.meta.env.VITE_NODE_ENV || 'development';
 const config = dbConfig[env];
 const db = {};
 let sequelize;
 
-if (process.env.DB_URL) {
-  sequelize = new Sequelize(process.env.DB_URL, config);
+if (import.meta.env.VITE_DB_URL) {
+  sequelize = new Sequelize(import.meta.env.VITE_DB_URL, config);
 } else {
   sequelize = new Sequelize(config);
 }

@@ -20,8 +20,8 @@ router.post('/', async (ctx) => {
   }
 
   if (
-    username.toLowerCase() !== process.env.TOKEN_USERNAME ||
-    password !== process.env.TOKEN_PASSWORD
+    username.toLowerCase() !== import.meta.env.VITE_TOKEN_USERNAME ||
+    password !== import.meta.env.VITE_TOKEN_PASSWORD
   ) {
     return handleError();
   }
@@ -30,7 +30,7 @@ router.post('/', async (ctx) => {
     {
       username,
     },
-    process.env.TOKEN_SECRET,
+    import.meta.env.VITE_TOKEN_SECRET,
     { expiresIn: '30d' }
   );
 

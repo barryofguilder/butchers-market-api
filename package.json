@@ -5,10 +5,11 @@
   "author": "Jason Barry <jbarry@hey.com>",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "node src/index.js",
-    "start:dev": "nodemon src/index.js",
-    "start:debug": "nodemon --inspect src/index.js",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "db:create": "sequelize-esm db:create",
     "db:migrate": "sequelize-esm db:migrate",
     "db:seed": "sequelize-esm db:seed:all",
@@ -22,8 +23,6 @@
     "@koa/cors": "^5.0.0",
     "aws-sdk": "^2.1328.0",
     "date-fns": "^2.30.0",
-    "dotenv": "^16.4.7",
-    "esm": "^3.2.25",
     "jsonwebtoken": "^9.0.2",
     "koa": "^2.15.3",
     "koa-body": "^6.0.1",
@@ -40,8 +39,10 @@
     "eslint": "^8.35.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
-    "nodemon": "^3.1.9",
-    "prettier": "2.8.4"
+    "prettier": "2.8.4",
+    "typescript": "~5.6.2",
+    "vite": "^5.4.11",
+    "vite-plugin-node": "^4.0.0"
   },
   "engines": {
     "node": "18.14.2"
