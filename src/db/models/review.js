@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const Review = sequelize.define('Review', {
     reviewer: {
       type: Sequelize.STRING,

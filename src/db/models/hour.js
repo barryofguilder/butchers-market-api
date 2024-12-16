@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const Hour = sequelize.define('Hour', {
     type: {
       type: Sequelize.STRING,

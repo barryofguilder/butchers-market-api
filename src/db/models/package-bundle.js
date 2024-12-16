@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const PackageBundle = sequelize.define('PackageBundle', {
     displayOrder: Sequelize.INTEGER,
     title: {

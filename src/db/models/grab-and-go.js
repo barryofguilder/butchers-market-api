@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const GrabAndGo = sequelize.define('GrabAndGo', {
     title: {
       type: Sequelize.STRING,

@@ -6,9 +6,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "start": "node index.js",
-    "start:dev": "nodemon index.js",
-    "start:debug": "nodemon --inspect index.js",
+    "start": "node src/index.js",
+    "start:dev": "nodemon src/index.js",
+    "start:debug": "nodemon --inspect src/index.js",
     "db:create": "sequelize-esm db:create",
     "db:migrate": "sequelize-esm db:migrate",
     "db:seed": "sequelize-esm db:seed:all",

@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-module.exports = (sequelize) => {
+export default (sequelize) => {
   const MeatBundle = sequelize.define('MeatBundle', {
     displayOrder: Sequelize.INTEGER,
     title: {
