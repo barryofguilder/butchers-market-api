@@ -7,7 +7,7 @@ import jwt from 'koa-jwt';
 import NAMESPACE from './constants/namespace';
 import config from './config/app';
 import router from './routes/index';
-import db from './models/index';
+import db from './db/models/index';
 import errorMiddleware from './errors/middleware';
 import serialize from './resources/index';
 

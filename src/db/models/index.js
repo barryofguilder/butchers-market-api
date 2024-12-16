@@ -1,6 +1,6 @@
 import Sequelize from 'sequelize';
-import dbConfig from '../config/db';
-import NotFoundError from '../errors/not-found';
+import dbConfig from '../../config/db';
+import NotFoundError from '../../errors/not-found';
 
 import initDeliItem from './deli-item';
 import initFeatureFlag from './feature-flag';
