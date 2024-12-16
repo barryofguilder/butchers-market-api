@@ -1,13 +1,16 @@
 import fs from 'fs';
 import path from 'path';
+import fetch from 'node-fetch';
 import { Upload } from '@aws-sdk/lib-storage';
 import { S3 } from '@aws-sdk/client-s3';
 
 const UPLOAD_DIRECTORY = import.meta.env.VITE_UPLOAD_DIR;
 const S3_CONFIG = {
   region: import.meta.env.VITE_AWS_REGION,
-  accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY_ID,
-  secretAccessKey: import.meta.env.VITE_AWS_SECRET_ACCESS_KEY,
+  credentials: {
+    accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY_ID,
+    secretAccessKey: import.meta.env.VITE_AWS_SECRET_ACCESS_KEY,
+  },
 };
 const IMAGE_EXTENTIONS = ['gif', 'jpg', 'jpeg', 'png'];
 const PDF_EXTENTIONS = ['pdf'];
