@@ -1,5 +1,4 @@
 import Router from 'koa-router';
-import Sequelize from 'sequelize';
 import { deleteUploadedFile } from '../utilities/file';
 
 const router = new Router();

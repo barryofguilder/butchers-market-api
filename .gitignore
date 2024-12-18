@@ -1,5 +1,5 @@
 /node_modules/
-/.env
+/*.env
 
 # Misc
 /.eslintcache
@@ -7,3 +7,5 @@
 
 # Mac stuff
 .DS_Store
+
+/dist

@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+import { Sequelize } from 'sequelize';
 
 export default (sequelize) => {
   const Hour = sequelize.define('Hour', {

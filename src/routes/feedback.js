@@ -1,5 +1,4 @@
 import Router from 'koa-router';
-import fetch from 'node-fetch';
 import nodemailer from 'nodemailer';
 
 import { isBlank } from '../utilities/is-blank';
@@ -68,12 +67,12 @@ router.post('/', async (ctx) => {
 });
 
 async function verifyRecaptcha(token) {
-  if (process.env.NODE_ENV !== 'production') {
+  if (!import.meta.env.PROD) {
     console.log('Skipping recaptcha due to environment');
     return true;
   }
 
-  const secretKey = process.env.RECAPTCHA_KEY;
+  const secretKey = import.meta.env.VITE_RECAPTCHA_KEY;
   const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
 
   try {
@@ -88,7 +87,7 @@ async function verifyRecaptcha(token) {
 }
 
 async function sendMail(name, email, message) {
-  if (process.env.NODE_ENV !== 'production') {
+  if (!import.meta.env.PROD) {
     console.log('Skipping email sending due to environment');
     return true;
   }
@@ -99,16 +98,16 @@ async function sendMail(name, email, message) {
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASSWORD,
+        user: import.meta.env.VITE_EMAIL_USER,
+        pass: import.meta.env.VITE_EMAIL_PASSWORD,
       },
     });
 
     const response = await transporter.sendMail({
-      from: process.env.FEEDBACK_EMAIL_FROM,
-      to: process.env.FEEDBACK_EMAIL_TO,
+      from: import.meta.env.VITE_FEEDBACK_EMAIL_FROM,
+      to: import.meta.env.VITE_FEEDBACK_EMAIL_TO,
       replyTo: email,
-      subject: process.env.FEEDBACK_EMAIL_SUBJECT,
+      subject: import.meta.env.VITE_FEEDBACK_EMAIL_SUBJECT,
       text,
     });
 

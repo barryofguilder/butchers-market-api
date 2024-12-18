@@ -1,5 +1,5 @@
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     return await queryInterface.bulkInsert('DeliItems', [
       {
         title: 'Rotisserie Chicken Salad',
@@ -120,7 +120,7 @@ export default {
     ]);
   },
 
-  async down(queryInterface, Sequelize) {
+  async down(queryInterface) {
     return await queryInterface.bulkDelete('DeliItems', null, {});
   },
 };

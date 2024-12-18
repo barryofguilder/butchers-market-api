@@ -1,5 +1,5 @@
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     await queryInterface.sequelize.transaction((t) => {
       return Promise.all([
         queryInterface.removeColumn('PackageBundles', 'flyerDownloadLink', { transaction: t }),

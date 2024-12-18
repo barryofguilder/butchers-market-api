@@ -1,5 +1,5 @@
 export default {
-  async up(queryInterface, Sequelize) {
+  async up(queryInterface) {
     return await queryInterface.sequelize.transaction((t) => {
       return Promise.all([
         queryInterface.removeColumn('GrabAndGos', 'featured', { transaction: t }),

@@ -3,17 +3,19 @@ import path from 'path';
 import { Upload } from '@aws-sdk/lib-storage';
 import { S3 } from '@aws-sdk/client-s3';
 
-const UPLOAD_DIRECTORY = process.env.UPLOAD_DIR;
+const UPLOAD_DIRECTORY = import.meta.env.VITE_UPLOAD_DIR;
 const S3_CONFIG = {
-  region: process.env.AWS_REGION,
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: import.meta.env.VITE_AWS_REGION,
+  credentials: {
+    accessKeyId: import.meta.env.VITE_AWS_ACCESS_KEY_ID,
+    secretAccessKey: import.meta.env.VITE_AWS_SECRET_ACCESS_KEY,
+  },
 };
 const IMAGE_EXTENTIONS = ['gif', 'jpg', 'jpeg', 'png'];
 const PDF_EXTENTIONS = ['pdf'];
-const OPTIMIZE_API_KEY = process.env.OPTIMIZE_API_KEY;
-const OPTIMIZE_IMAGE_MAX_DIMENSION = process.env.OPTIMIZE_IMAGE_MAX_DIMENSION
-  ? parseInt(process.env.OPTIMIZE_IMAGE_MAX_DIMENSION)
+const OPTIMIZE_API_KEY = import.meta.env.VITE_OPTIMIZE_API_KEY;
+const OPTIMIZE_IMAGE_MAX_DIMENSION = import.meta.env.VITE_OPTIMIZE_IMAGE_MAX_DIMENSION
+  ? parseInt(import.meta.env.VITE_OPTIMIZE_IMAGE_MAX_DIMENSION)
   : 1024;
 
 export function isPdf(filePath) {
@@ -38,7 +40,7 @@ export async function uploadFile(file, fileName) {
   const fileStream = fs.createReadStream(file.filepath);
   const filePath = path.join(UPLOAD_DIRECTORY, fileName);
   const uploadParams = {
-    Bucket: process.env.S3_BUCKET,
+    Bucket: import.meta.env.VITE_S3_BUCKET,
     Body: fileStream,
     Key: filePath,
     ContentType: calculateContentType(filePath),
@@ -56,9 +58,9 @@ export async function uploadFile(file, fileName) {
 }
 
 export async function deleteUploadedFile(fileName) {
-  const filePath = path.join(process.env.UPLOAD_DIR, fileName);
+  const filePath = path.join(import.meta.env.VITE_UPLOAD_DIR, fileName);
   const deleteParams = {
-    Bucket: process.env.S3_BUCKET,
+    Bucket: import.meta.env.VITE_S3_BUCKET,
     Key: filePath,
   };
 
@@ -167,7 +169,7 @@ export async function optimizeImage(file) {
 export async function uploadOptimizedFile(arrayBuffer, fileName) {
   const filePath = path.join(UPLOAD_DIRECTORY, fileName);
   const uploadParams = {
-    Bucket: process.env.S3_BUCKET,
+    Bucket: import.meta.env.VITE_S3_BUCKET,
     Body: new Uint8Array(arrayBuffer),
     Key: filePath,
     ContentType: calculateContentType(filePath),

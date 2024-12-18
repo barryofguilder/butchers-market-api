@@ -5,10 +5,12 @@
   "author": "Jason Barry <jbarry@hey.com>",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "node src/index.js",
-    "start:dev": "nodemon src/index.js",
-    "start:debug": "nodemon --inspect src/index.js",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "start": "node dist/index.cjs",
     "db:create": "sequelize-esm db:create",
     "db:migrate": "sequelize-esm db:migrate",
     "db:seed": "sequelize-esm db:seed:all",
@@ -18,35 +20,38 @@
     "prettier": "prettier --write \"**/*.js\""
   },
   "dependencies": {
-    "@aws-sdk/lib-storage": "^3.282.0",
+    "@aws-sdk/client-s3": "^3.712.0",
+    "@aws-sdk/lib-storage": "^3.712.0",
     "@koa/cors": "^5.0.0",
-    "aws-sdk": "^2.1328.0",
-    "date-fns": "^2.30.0",
-    "dotenv": "^16.4.7",
-    "esm": "^3.2.25",
+    "aws-sdk": "^2.1692.0",
     "jsonwebtoken": "^9.0.2",
     "koa": "^2.15.3",
     "koa-body": "^6.0.1",
     "koa-jwt": "^4.0.4",
     "koa-logger": "^3.2.1",
-    "koa-router": "^12.0.1",
-    "node-fetch": "^2.7.0",
+    "koa-router": "^13.0.1",
     "nodemailer": "^6.9.16",
     "pg": "^8.13.1",
     "sequelize": "^6.37.5",
     "sequelize-cli-esm": "^5.0.6"
   },
   "devDependencies": {
-    "eslint": "^8.35.0",
-    "eslint-config-prettier": "^8.6.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "nodemon": "^3.1.9",
-    "prettier": "2.8.4"
+    "@types/koa": "^2.15.0",
+    "@types/koa-router": "^7.4.8",
+    "@types/node": "^22.10.2",
+    "@typescript-eslint/parser": "^8.18.0",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "prettier": "3.4.2",
+    "typescript": "~5.6.2",
+    "vite": "^5.4.11",
+    "vite-plugin-node": "^4.0.0"
   },
   "engines": {
-    "node": "18.14.2"
+    "node": "22.12.0"
   },
   "volta": {
-    "node": "18.14.2"
+    "node": "22.12.0"
   }
 }

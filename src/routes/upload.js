@@ -7,7 +7,7 @@ import {
   uploadOptimizedFile,
 } from '../utilities/file';
 
-const OPTIMIZE_IMAGES = process.env.OPTIMIZE_IMAGES === 'false' ? false : true;
+const OPTIMIZE_IMAGES = import.meta.env.VITE_OPTIMIZE_IMAGES === 'false' ? false : true;
 
 const router = new Router();
 
