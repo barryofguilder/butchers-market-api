@@ -18,12 +18,14 @@ module.exports = {
   overrides: [
     // node files
     {
-      files: ['./src/db/migrations/*.js', './src/db/seeders/*.js'],
+      files: ['./db/migrations/*.js', './db/seeders/*.js'],
       parserOptions: {
-        sourceType: 'script',
+        ecmaVersion: 'latest',
+        sourceType: 'commonjs',
       },
       env: {
         browser: false,
+        commonjs: true,
         node: true,
       },
       plugins: ['n'],
