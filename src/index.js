@@ -46,7 +46,7 @@ app.use(
 app.use(router.routes());
 
 app.listen(config.port, () => {
-  console.log(`Started server on port ${config.port}`);
+  console.log(`Started ${config.environment} server on port ${config.port}`);
 });
 
 export const butcher = app;
