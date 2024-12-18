@@ -45,7 +45,7 @@ app.use(
 );
 app.use(router.routes());
 
-app.listen(3000, () => {
+app.listen(config.port, () => {
   console.log(`Started server on port ${config.port}`);
 });
 
