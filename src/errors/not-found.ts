@@ -1,5 +1,8 @@
 export default class NotFoundError extends Error {
-  constructor(modelName, id) {
+  modelName: string;
+  id: string;
+
+  constructor(modelName: string, id: string) {
     super();
 
     this.modelName = modelName;
