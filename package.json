@@ -1,7 +1,7 @@
 {
   "name": "butchers-market-api",
   "version": "3.0.0",
-  "main": "index.js",
+  "main": "src/index.js",
   "author": "Jason Barry <jbarry@hey.com>",
   "license": "MIT",
   "private": true,
