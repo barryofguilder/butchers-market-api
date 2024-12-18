@@ -1,6 +1,10 @@
-export default {
-  config: './src/config/db.js',
-  'models-path': './src/db/models',
-  'seeders-path': './src/db/seeders',
-  'migrations-path': './src/db/migrations',
+require('babel-register');
+
+const path = require('path');
+
+module.exports = {
+  config: path.resolve('src', 'config', 'db.cjs'),
+  'models-path': path.resolve('src', 'db', 'models'),
+  'seeders-path': path.resolve('src', 'db', 'seeders'),
+  'migrations-path': path.resolve('src', 'db', 'migrations'),
 };

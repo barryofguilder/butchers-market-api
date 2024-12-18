@@ -15,5 +15,19 @@ module.exports = {
     node: true,
   },
   rules: {},
-  overrides: [],
+  overrides: [
+    // node files
+    {
+      files: ['./src/db/migrations/*.js', './src/db/seeders/*.js'],
+      parserOptions: {
+        sourceType: 'script',
+      },
+      env: {
+        browser: false,
+        node: true,
+      },
+      plugins: ['n'],
+      extends: ['eslint:recommended', 'plugin:n/recommended', 'plugin:prettier/recommended'],
+    },
+  ],
 };

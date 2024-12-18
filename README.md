@@ -28,15 +28,24 @@ You will need the following things properly installed on your computer.
 
 ## Running / Development
 
-- `npm start`
-- `npm run start:dev` will auto restart when files change
-- `npm run start:debug` will run in debugger mode
-  - In Chrome, navigate to `chrome://inspect`
-  - Click on the "Inspect" link to launch the debugger window
+- `npm run dev` will start the dev server
+
+To debug the application, you can use VS Code. Make sure you select the `dev` script.
 
 ## Deployment
 
 Deployed using [Render](https://render.com)!
+
+### Scripts for Production
+
+- `npm ci --include=dev`
+  - The `--include=dev` flag is used to include the `devDependencies` in the `node_modules` folder.
+- `npm run build`
+  - Build the application for production.
+- `npm run db:migrate`
+  - Run the database migrations.
+- `npm start`
+  - Start the application in production mode.
 
 ## Sequelize Scripts
 
@@ -48,7 +57,7 @@ Creating a new model will create a new database table and a corresponding model.
 below, we are creating a `Special` model with a single attribute of `title`.
 
 ```bash
-sequelize-esm model:generate --name Special --attributes title:string
+npx sequelize-cli model:generate --name Special --attributes title:string
 ```
 
 ### Create Migration
@@ -57,7 +66,7 @@ Creating a new migration will create the database scripts needed to change the u
 table.
 
 ```bash
-sequelize-esm migration:generate --name special-link
+npx sequelize-cli migration:generate --name special-link
 ```
 
 ### Create Seed
@@ -66,5 +75,5 @@ Once you create a new table, you'll probably want to add some seed data to it. I
 we are creating a seed for the `Special` model.
 
 ```bash
-sequelize-esm seed:generate --name special
+npx sequelize-cli seed:generate --name special
 ```

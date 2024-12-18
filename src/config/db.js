@@ -1,3 +1,5 @@
+// This file is used when running the server.
+
 export default {
   development: {
     dialect: 'postgres',
