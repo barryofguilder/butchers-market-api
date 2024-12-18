@@ -1,4 +1,6 @@
+import { getEnvironment } from '../utilities/environment';
+
 export default {
-  environment: import.meta.env.VITE_NODE_ENV,
+  environment: getEnvironment(),
   port: import.meta.env.VITE_PORT,
 };

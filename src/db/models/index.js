@@ -1,6 +1,7 @@
 import { Sequelize } from 'sequelize';
 import dbConfig from '../../config/db';
 import NotFoundError from '../../errors/not-found';
+import { getEnvironment } from '../../utilities/environment';
 
 import initDeliItem from './deli-item';
 import initFeatureFlag from './feature-flag';
@@ -12,7 +13,7 @@ import initPackageBundle from './package-bundle';
 import initReview from './review';
 import initSpecial from './special';
 
-const env = import.meta.env.VITE_NODE_ENV || 'development';
+const env = getEnvironment();
 const config = dbConfig[env];
 const db = {};
 let sequelize;

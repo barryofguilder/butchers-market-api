@@ -67,7 +67,7 @@ router.post('/', async (ctx) => {
 });
 
 async function verifyRecaptcha(token) {
-  if (import.meta.env.VITE_NODE_ENV !== 'production') {
+  if (!import.meta.env.PROD) {
     console.log('Skipping recaptcha due to environment');
     return true;
   }
@@ -87,7 +87,7 @@ async function verifyRecaptcha(token) {
 }
 
 async function sendMail(name, email, message) {
-  if (import.meta.env.VITE_NODE_ENV !== 'production') {
+  if (!import.meta.env.PROD) {
     console.log('Skipping email sending due to environment');
     return true;
   }
