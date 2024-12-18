@@ -1,4 +1,7 @@
-export default {
+'use strict';
+
+/** @type {import('sequelize-cli').Migration} */
+module.exports = {
   async up(queryInterface, Sequelize) {
     return await queryInterface.sequelize.transaction(async (t) => {
       await queryInterface.addColumn('GrabAndGos', 'inStock', {
