@@ -13,7 +13,7 @@ router.get('/', async (ctx) => {
 
   let items = await ctx.app.db.GrabAndGo.findAll({
     where,
-    order: [['socialTitle', 'asc']],
+    order: [['title', 'asc']],
   });
 
   ctx.body = ctx.app.serialize('grab-and-go', items);
