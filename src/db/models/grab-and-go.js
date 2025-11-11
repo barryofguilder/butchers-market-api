@@ -9,6 +9,7 @@ export default (sequelize) => {
         notEmpty: true,
       },
     },
+    socialTitle: Sequelize.STRING,
     description: Sequelize.STRING,
     imageUrl: Sequelize.STRING,
     inStock: Sequelize.BOOLEAN,
