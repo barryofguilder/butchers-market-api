@@ -4,7 +4,17 @@ import { deleteUploadedFile } from '../utilities/file';
 const router = new Router();
 
 router.get('/', async (ctx) => {
-  let items = await ctx.app.db.GrabAndGo.findAll({ order: [['title', 'asc']] });
+  const inStock = ctx.query['filter[inStock]'];
+  let where = {};
+
+  if (inStock !== undefined) {
+    where.inStock = true;
+  }
+
+  let items = await ctx.app.db.GrabAndGo.findAll({
+    where,
+    order: [['socialTitle', 'asc']],
+  });
 
   ctx.body = ctx.app.serialize('grab-and-go', items);
 });
