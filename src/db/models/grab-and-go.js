@@ -13,6 +13,7 @@ export default (sequelize) => {
     description: Sequelize.STRING,
     imageUrl: Sequelize.STRING,
     inStock: Sequelize.BOOLEAN,
+    isHoliday: Sequelize.BOOLEAN,
   });
 
   return GrabAndGo;
