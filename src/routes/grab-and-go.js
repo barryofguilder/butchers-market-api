@@ -5,10 +5,15 @@ const router = new Router();
 
 router.get('/', async (ctx) => {
   const inStock = ctx.query['filter[inStock]'];
+  const isHoliday = ctx.query['filter[isHoliday]'];
   let where = {};
 
   if (inStock !== undefined) {
-    where.inStock = true;
+    where.inStock = inStock === 'true';
+  }
+
+  if (isHoliday !== undefined) {
+    where.isHoliday = isHoliday === 'true';
   }
 
   let items = await ctx.app.db.GrabAndGo.findAll({

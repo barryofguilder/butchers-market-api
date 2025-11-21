@@ -10,6 +10,7 @@ export default (model) => {
       description: model.description,
       imageUrl: model.imageUrl,
       inStock: model.inStock,
+      isHoliday: model.isHoliday,
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
     },
