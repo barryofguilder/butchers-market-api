@@ -86,13 +86,23 @@ router.post('/', async (ctx) => {
 });
 
 router.post('/reorder', async (ctx) => {
-  const items = JSON.parse(ctx.request.body);
-  let specials = await ctx.app.db.Special.findAll();
+  const items =
+    typeof ctx.request.body === 'string' ? JSON.parse(ctx.request.body) : ctx.request.body;
+  const specials = await ctx.app.db.Special.findAll();
 
-  items.forEach(async (item, index) => {
-    let special = specials.find((i) => i.id.toString() === item.id.toString());
-    special.set({ displayOrder: index + 1 });
-    await special.save();
+  // Reorder in a transaction so a failed save cannot leave a partial ordering behind.
+  await ctx.app.db.sequelize.transaction(async (transaction) => {
+    for (const [index, item] of items.entries()) {
+      const special = specials.find((i) => i.id.toString() === item.id.toString());
+
+      if (!special) {
+        continue;
+      }
+
+      special.set({ displayOrder: index + 1 });
+
+      await special.save({ transaction });
+    }
   });
 
   ctx.status = 201;
