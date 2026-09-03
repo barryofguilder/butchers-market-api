@@ -53,6 +53,30 @@ router.post('/', async (ctx) => {
   ctx.body = ctx.app.serialize('meat-bundle', meatBundle);
 });
 
+router.post('/reorder', async (ctx) => {
+  const items =
+    typeof ctx.request.body === 'string' ? JSON.parse(ctx.request.body) : ctx.request.body;
+  const meatBundles = await ctx.app.db.MeatBundle.findAll();
+
+  // Reorder in a transaction so a failed save cannot leave a partial ordering behind.
+  await ctx.app.db.sequelize.transaction(async (transaction) => {
+    for (const [index, item] of items.entries()) {
+      const meatBundle = meatBundles.find((i) => i.id.toString() === item.id.toString());
+
+      if (!meatBundle) {
+        continue;
+      }
+
+      meatBundle.set({ displayOrder: index + 1 });
+
+      await meatBundle.save({ transaction });
+    }
+  });
+
+  ctx.status = 201;
+  ctx.body = ctx.app.serialize('meat-bundle', meatBundles);
+});
+
 router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
   const attrs = ctx.request.body.data.attributes;
