@@ -1,4 +1,4 @@
-import Router from 'koa-router';
+import Router from '@koa/router';
 import { deleteUploadedFile } from '../utilities/file';
 
 const router = new Router();
