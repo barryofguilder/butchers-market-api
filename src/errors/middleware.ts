@@ -1,0 +1,71 @@
+import type { Middleware } from 'koa';
+import { ValidationError } from 'sequelize';
+import NotFoundError from './not-found';
+
+const errorMiddleware: Middleware = async (ctx, next) => {
+  try {
+    await next();
+  } catch (err) {
+    if (typeof err === 'object' && err !== null && 'status' in err && err.status === 401) {
+      ctx.status = 401;
+
+      return (ctx.body = {
+        errors: [
+          {
+            code: 401,
+            title: 'Unauthorized',
+            detail: 'Protected resource, use Authorization header to get access',
+          },
+        ],
+      });
+    }
+
+    if (err instanceof NotFoundError) {
+      ctx.status = 404;
+
+      return (ctx.body = {
+        errors: [
+          {
+            code: 404,
+            title: 'Not Found',
+            detail: `${err.modelName} not found with the id '${err.id}'`,
+          },
+        ],
+      });
+    }
+
+    // Also covers UniqueConstraintError, which extends ValidationError.
+    if (err instanceof ValidationError) {
+      ctx.status = 422;
+
+      return (ctx.body = {
+        errors: err.errors.map((valError) => {
+          const title = valError.validatorKey === 'notEmpty' ? `can't be blank` : valError.message;
+
+          return {
+            status: 422,
+            code: 100,
+            title,
+            source: {
+              pointer: `/data/attributes/${valError.path}`,
+            },
+          };
+        }),
+      });
+    }
+
+    ctx.status = 500;
+
+    return (ctx.body = {
+      errors: [
+        {
+          code: 500,
+          title: 'Internal Server Error',
+          detail: err instanceof Error ? err.message : String(err),
+        },
+      ],
+    });
+  }
+};
+
+export default errorMiddleware;

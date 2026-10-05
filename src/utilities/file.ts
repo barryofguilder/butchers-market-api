@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import { Upload } from '@aws-sdk/lib-storage';
 import { S3 } from '@aws-sdk/client-s3';
+import type { File } from 'formidable';
 
 const UPLOAD_DIRECTORY = import.meta.env.VITE_UPLOAD_DIR;
 const S3_CONFIG = {
@@ -18,12 +19,32 @@ const OPTIMIZE_IMAGE_MAX_DIMENSION = import.meta.env.VITE_OPTIMIZE_IMAGE_MAX_DIM
   ? parseInt(import.meta.env.VITE_OPTIMIZE_IMAGE_MAX_DIMENSION)
   : 1024;
 
-export function isPdf(filePath) {
+// Response from https://api.tinify.com/shrink. See the example in optimizeImage().
+type ShrinkResponse =
+  | { error: string; message: string }
+  | {
+      error?: undefined;
+      input: { size: number; type: string };
+      output: {
+        size: number;
+        type: string;
+        width: number;
+        height: number;
+        ratio: number;
+        url: string;
+      };
+    };
+
+interface ResizeOptions {
+  resize: { method: 'scale'; width?: number; height?: number };
+}
+
+export function isPdf(filePath: string) {
   const extension = path.extname(filePath).replace('.', '');
   return PDF_EXTENTIONS.includes(extension);
 }
 
-function calculateContentType(filePath) {
+function calculateContentType(filePath: string) {
   const extension = path.extname(filePath).replace('.', '');
   let contentType = 'application/octet-stream';
 
@@ -36,7 +57,7 @@ function calculateContentType(filePath) {
   return contentType;
 }
 
-export async function uploadFile(file, fileName) {
+export async function uploadFile(file: File, fileName: string) {
   const fileStream = fs.createReadStream(file.filepath);
   const filePath = path.join(UPLOAD_DIRECTORY, fileName);
   const uploadParams = {
@@ -57,7 +78,7 @@ export async function uploadFile(file, fileName) {
   }
 }
 
-export async function deleteUploadedFile(fileName) {
+export async function deleteUploadedFile(fileName: string) {
   const filePath = path.join(import.meta.env.VITE_UPLOAD_DIR, fileName);
   const deleteParams = {
     Bucket: import.meta.env.VITE_S3_BUCKET,
@@ -72,7 +93,7 @@ export async function deleteUploadedFile(fileName) {
   }
 }
 
-export async function optimizeImage(file) {
+export async function optimizeImage(file: File) {
   const fileStream = fs.createReadStream(file.filepath);
   const apiKey = Buffer.from(OPTIMIZE_API_KEY).toString('base64');
 
@@ -86,7 +107,7 @@ export async function optimizeImage(file) {
       body: fileStream,
       duplex: 'half',
     });
-    const optimizeJson = await response.json();
+    const optimizeJson = (await response.json()) as ShrinkResponse;
 
     /*
     {
@@ -102,7 +123,7 @@ export async function optimizeImage(file) {
     }
     */
 
-    if (optimizeJson.error) {
+    if (optimizeJson.error !== undefined) {
       console.error('error optimizing image');
       console.error(optimizeJson);
       return null;
@@ -114,7 +135,7 @@ export async function optimizeImage(file) {
       output.width > OPTIMIZE_IMAGE_MAX_DIMENSION ||
       output.height > OPTIMIZE_IMAGE_MAX_DIMENSION
     ) {
-      const options = {
+      const options: ResizeOptions = {
         resize: {
           method: 'scale',
         },
@@ -166,7 +187,7 @@ export async function optimizeImage(file) {
   }
 }
 
-export async function uploadOptimizedFile(arrayBuffer, fileName) {
+export async function uploadOptimizedFile(arrayBuffer: ArrayBuffer, fileName: string) {
   const filePath = path.join(UPLOAD_DIRECTORY, fileName);
   const uploadParams = {
     Bucket: import.meta.env.VITE_S3_BUCKET,
@@ -186,7 +207,7 @@ export async function uploadOptimizedFile(arrayBuffer, fileName) {
   }
 }
 
-export async function deleteLocalFile(file) {
+export async function deleteLocalFile(file: File) {
   try {
     // Delete local file
     await fs.unlinkSync(file.filepath);

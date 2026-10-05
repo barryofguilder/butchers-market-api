@@ -1,6 +1,8 @@
 import NAMESPACE from '../constants/namespace';
+import type { PackageBundle } from '../db/models/package-bundle';
+import type { ResourceObject } from './types';
 
-export default (model) => {
+export default (model: PackageBundle): ResourceObject => {
   return {
     type: 'package-bundles',
     id: model.id,
@@ -20,7 +22,7 @@ export default (model) => {
   };
 };
 
-function format(items) {
+function format(items: string | null) {
   if (items) {
     return items.split('|').map((item) => {
       return item.replace('\n', '').trim();

@@ -23,34 +23,34 @@ npx sequelize-cli migration:generate --name <name>
 npx sequelize-cli seed:generate --name <name>
 ```
 
-Tests live in `tests/` and use Vitest + supertest against `app.callback()` (no server, no port). In test mode (`import.meta.env.MODE === 'test'`) `getEnvironment()` returns `test`, which points Sequelize at an in-memory SQLite database; each test file resets it with `resetDatabase()` from `tests/helpers.js`. `vitest.config.js` is separate from `vite.config.js` so vite-plugin-node doesn't boot the server, and it pins the `VITE_` vars tests rely on.
+Tests live in `tests/` and use Vitest + supertest against `app.callback()` (no server, no port). In test mode (`import.meta.env.MODE === 'test'`) `getEnvironment()` returns `test`, which points Sequelize at an in-memory SQLite database; each test file resets it with `resetDatabase()` from `tests/helpers.js`. `vitest.config.js` is separate from `vite.config.ts` so vite-plugin-node doesn't boot the server, and it pins the `VITE_` vars tests rely on.
 
 Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix because app code reads them via `import.meta.env`.
 
 ## Architecture
 
-**Request pipeline** ([src/app.js](src/app.js); [src/index.js](src/index.js) only calls `listen`): error middleware → logger (skips the `/api/` health check) → CORS → koa-body (multipart enabled) → koa-jwt → router. JWT auth is required for every non-`GET` request except `/api/token`. Tokens come from `POST /api/token`, which checks a single username/password from env and issues a 30-day JWT.
+**Request pipeline** ([src/app.ts](src/app.ts); [src/index.ts](src/index.ts) only calls `listen`, and only in production): error middleware → logger (skips the `/api/` health check) → CORS → koa-body (multipart enabled) → koa-jwt → router. JWT auth is required for every non-`GET` request except `/api/token`. Tokens come from `POST /api/token`, which checks a single username/password from env and issues a 30-day JWT.
 
-**The app object is the service locator.** `app.db` (Sequelize models) and `app.serialize` (JSON:API serializer) are attached in `app.js`. Route handlers reach them via `ctx.app.db.<Model>` and `ctx.app.serialize('<type>', ...)` rather than importing them.
+**The app object is the service locator.** `app.db` (Sequelize models) and `app.serialize` (JSON:API serializer) are attached in `app.ts`. Route handlers reach them via `ctx.app.db.<Model>` and `ctx.app.serialize('<type>', ...)` rather than importing them. Both are typed through a `declare module 'koa'` augmentation of `DefaultContext` in `app.ts`, so `ctx.app.db.MeatBundle` is a typed model class.
 
 **Adding a resource touches four places, each with a manual registry:**
-1. Model in `src/db/models/<name>.js` (a `(sequelize) => sequelize.define(...)` factory), registered by hand in [src/db/models/index.js](src/db/models/index.js). There is no auto-loading.
+1. Model in `src/db/models/<name>.ts`: a class extending [`AppModel`](src/db/models/app-model.ts) with `declare`d fields typed via `InferAttributes`/`InferCreationAttributes`, plus a default-exported `(sequelize) => Model.init(...)` function. Registered by hand in [src/db/models/index.ts](src/db/models/index.ts). There is no auto-loading. List `id`, `createdAt` and `updatedAt` in `init` with `allowNull: false` (the typings require them, and listing them otherwise drops the `NOT NULL` Sequelize would add).
 2. Migration in `src/db/migrations/` (CommonJS; a `package.json` with `"type": "commonjs"` in `migrations/` and `seeders/` makes Node load them that way despite the root `"type": "module"`. Existing migrations wrap changes in `queryInterface.sequelize.transaction`).
-3. Serializer in `src/resources/<name>.js` returning `{ type, id, attributes, links }`, registered in [src/resources/index.js](src/resources/index.js). `serialize()` wraps the result in `{ data }` and converts ids to strings.
+3. Serializer in `src/resources/<name>.ts` taking the model class and returning a `ResourceObject` (`{ type, id, attributes, links }`), registered in [src/resources/index.ts](src/resources/index.ts). `serialize()` wraps the result in `{ data }`, converts ids to strings, and only accepts the model that matches the resource type.
 4. Router in `src/routes/<name>.js` exporting `router.routes()`, mounted under the `/api` namespace in [src/routes/index.js](src/routes/index.js). Route paths are plural kebab-case (e.g. `/api/grab-and-gos`).
 
 **Conventions in route handlers:**
 - Request bodies are JSON:API: read `ctx.request.body.data.attributes`.
 - Filters use bracketed query params, e.g. `ctx.query['filter[isHidden]']`.
-- Use `Model.findOrFail(id)` (added to every model in `models/index.js`). It throws `NotFoundError`, which [src/errors/middleware.js](src/errors/middleware.js) turns into a JSON:API 404. Sequelize `ValidationError`/`UniqueConstraintError` become 422s with `source.pointer` set to `/data/attributes/<field>`.
+- Use `Model.findOrFail(id)` (a static on `AppModel`). It throws `NotFoundError`, which [src/errors/middleware.ts](src/errors/middleware.ts) turns into a JSON:API 404. Sequelize `ValidationError`/`UniqueConstraintError` become 422s with `source.pointer` set to `/data/attributes/<field>`.
 - Orderable resources have a `displayOrder` column, a `POST /reorder` endpoint that takes an ordered array of `{ id }`, and new records appended at max+1. See [src/routes/meat-bundle.js](src/routes/meat-bundle.js).
 - List-type attributes (e.g. meat bundle `items`) are stored as `|`-delimited strings. Routes `join('|')` on write; the serializer splits on read.
 
-**Two DB configs:** [src/config/db.ts](src/config/db.ts) is used by the running app (`import.meta.env`). [src/config/db.cjs](src/config/db.cjs) is used by sequelize-cli (`process.env` via dotenv; wired up in `.sequelizerc`). Keep the two in sync. The app prefers `VITE_DB_URL` when it is set. The environment is `production` when `import.meta.env.PROD`, otherwise `development`.
+**Two DB configs:** [src/config/db.ts](src/config/db.ts) is used by the running app (`import.meta.env`). [src/config/db.cjs](src/config/db.cjs) is used by sequelize-cli (`process.env` via dotenv; wired up in `.sequelizerc`). Keep the two in sync. The app prefers `VITE_DB_URL` when it is set. The environment is `test` under Vitest, `production` when `import.meta.env.PROD`, otherwise `development`.
 
-**Uploads** ([src/routes/upload.js](src/routes/upload.js), [src/utilities/file.js](src/utilities/file.js)): multipart `file` plus `generatedFileName`. Images are optimized/resized through the TinyPNG API (skipped for PDFs, `?noOptimize`, or `VITE_OPTIMIZE_IMAGES=false`) and then uploaded to S3 under `VITE_UPLOAD_DIR`.
+**Uploads** ([src/routes/upload.js](src/routes/upload.js), [src/utilities/file.ts](src/utilities/file.ts)): multipart `file` plus `generatedFileName`. Images are optimized/resized through the TinyPNG API (skipped for PDFs, `?noOptimize`, or `VITE_OPTIMIZE_IMAGES=false`) and then uploaded to S3 under `VITE_UPLOAD_DIR`.
 
-Source is mostly plain JS with a few `.ts` files. `tsc` runs in strict mode but only for type-checking (`noEmit`).
+Source is being converted to TypeScript: everything except `src/routes/` and `tests/` is `.ts`. `allowJs` in `tsconfig.json` lets the two mix until the conversion is done. Migrations and seeders stay CommonJS `.js` because sequelize-cli loads them directly. `tsc` runs in strict mode but only for type-checking (`noEmit`).
 
 ## Conventions
 

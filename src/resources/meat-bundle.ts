@@ -1,6 +1,8 @@
 import NAMESPACE from '../constants/namespace';
+import type { MeatBundle } from '../db/models/meat-bundle';
+import type { ResourceObject } from './types';
 
-export default (model) => {
+export default (model: MeatBundle): ResourceObject => {
   return {
     type: 'meat-bundles',
     id: model.id,
@@ -22,7 +24,7 @@ export default (model) => {
   };
 };
 
-function format(items) {
+function format(items: string | null) {
   if (items) {
     return items.split('|').map((item) => {
       return item.replace('\n', '').trim();

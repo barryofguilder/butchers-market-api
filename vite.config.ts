@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       ...VitePluginNode({
         adapter: 'koa',
-        appPath: './src/index.js',
+        appPath: './src/index.ts',
         exportName: 'butcher',
 
         // Optional, default: false

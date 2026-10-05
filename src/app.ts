@@ -11,9 +11,17 @@ import db from './db/models/index';
 import errorMiddleware from './errors/middleware';
 import serialize from './resources/index';
 
-const app = new Koa();
-app.db = db;
-app.serialize = serialize;
+const app = Object.assign(new Koa(), { db, serialize });
+
+export type App = typeof app;
+
+// Koa's Application is exported with `export =`, which can't be augmented directly, so the
+// services are typed on the context's `app` instead. This is what types `ctx.app.db` in routes.
+declare module 'koa' {
+  interface DefaultContext {
+    app: App;
+  }
+}
 
 app.use(errorMiddleware);
 
@@ -31,16 +39,18 @@ app.use(koaBody({ multipart: true }));
 
 app.use(router.allowedMethods());
 app.use(
-  jwt({ secret: import.meta.env.VITE_TOKEN_SECRET }).unless(function ({ url, method }) {
-    if (method === 'GET') {
-      return true;
-    }
+  jwt({ secret: import.meta.env.VITE_TOKEN_SECRET }).unless({
+    custom({ url, method }) {
+      if (method === 'GET') {
+        return true;
+      }
 
-    const publicRoutes = [`${NAMESPACE}/token`];
+      const publicRoutes = [`${NAMESPACE}/token`];
 
-    return publicRoutes.some((route) => {
-      return url.startsWith(route);
-    });
+      return publicRoutes.some((route) => {
+        return url.startsWith(route);
+      });
+    },
   })
 );
 app.use(router.routes());

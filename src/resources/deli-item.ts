@@ -1,6 +1,8 @@
 import NAMESPACE from '../constants/namespace';
+import type { DeliItem } from '../db/models/deli-item';
+import type { ResourceObject } from './types';
 
-export default (model) => {
+export default (model: DeliItem): ResourceObject => {
   return {
     type: 'deli-items',
     id: model.id,

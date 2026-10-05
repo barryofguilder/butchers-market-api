@@ -1,9 +1,11 @@
+export type Environment = 'development' | 'test' | 'production';
+
 /**
  * Gets the name of the current environment.
  *
  * @returns Returns the name of the current environment.
  */
-export function getEnvironment() {
+export function getEnvironment(): Environment {
   if (import.meta.env.MODE === 'test') {
     return 'test';
   }

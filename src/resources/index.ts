@@ -7,6 +7,7 @@ import menu from './menu';
 import packageBundle from './package-bundle';
 import review from './review';
 import special from './special';
+import type { ResourceObject } from './types';
 
 const resources = {
   'deli-item': deliItem,
@@ -20,8 +21,17 @@ const resources = {
   special,
 };
 
-export default function serialize(type, model) {
-  const resource = resources[type];
+type Resources = typeof resources;
+export type ResourceType = keyof Resources;
+type ModelFor<T extends ResourceType> = Parameters<Resources[T]>[0];
+type Serializer<T extends ResourceType> = (model: ModelFor<T>) => ResourceObject;
+
+export default function serialize<T extends ResourceType>(
+  type: T,
+  model: ModelFor<T> | ModelFor<T>[]
+) {
+  // TypeScript can't tie `resources[type]` back to `T` on its own.
+  const resource = resources[type] as Serializer<T>;
   let data;
 
   if (Array.isArray(model)) {
@@ -34,7 +44,7 @@ export default function serialize(type, model) {
 }
 
 // JSON:API requires resource object ids to be strings
-function toResourceObject(resource, model) {
+function toResourceObject<T extends ResourceType>(resource: Serializer<T>, model: ModelFor<T>) {
   const object = resource(model);
   return { ...object, id: String(object.id) };
 }

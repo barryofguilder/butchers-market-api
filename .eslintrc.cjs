@@ -16,6 +16,14 @@ module.exports = {
   },
   rules: {},
   overrides: [
+    {
+      files: ['**/*.ts'],
+      rules: {
+        // TypeScript reports these itself, and the core rules misfire on types.
+        'no-undef': 'off',
+        'no-unused-vars': 'off',
+      },
+    },
     // node files
     {
       files: ['./db/migrations/*.js', './db/seeders/*.js'],
