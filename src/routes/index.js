@@ -1,4 +1,4 @@
-import Router from 'koa-router';
+import Router from '@koa/router';
 
 import status from './status';
 import deliItem from './deli-item';
