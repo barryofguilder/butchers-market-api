@@ -14,6 +14,12 @@ export default {
     //   ssl: true,
     // },
   },
+  // Tests run against a throwaway in-memory SQLite database instead of Postgres.
+  test: {
+    dialect: 'sqlite',
+    storage: ':memory:',
+    logging: false,
+  },
   production: {
     dialect: 'postgres',
     host: import.meta.env.VITE_DB_HOST,
