@@ -29,7 +29,7 @@ Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix becaus
 
 ## Architecture
 
-**Request pipeline** ([src/app.js](src/app.js); [src/index.js](src/index.js) only calls `listen`): error middleware → logger (skips the `/api/` health check) → CORS → koa-body (multipart enabled) → koa-jwt → router. JWT auth is required for every non-`GET` request except `/api/feedback` and `/api/token`. Tokens come from `POST /api/token`, which checks a single username/password from env and issues a 30-day JWT.
+**Request pipeline** ([src/app.js](src/app.js); [src/index.js](src/index.js) only calls `listen`): error middleware → logger (skips the `/api/` health check) → CORS → koa-body (multipart enabled) → koa-jwt → router. JWT auth is required for every non-`GET` request except `/api/token`. Tokens come from `POST /api/token`, which checks a single username/password from env and issues a 30-day JWT.
 
 **The app object is the service locator.** `app.db` (Sequelize models) and `app.serialize` (JSON:API serializer) are attached in `app.js`. Route handlers reach them via `ctx.app.db.<Model>` and `ctx.app.serialize('<type>', ...)` rather than importing them.
 
@@ -49,8 +49,6 @@ Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix becaus
 **Two DB configs:** [src/config/db.ts](src/config/db.ts) is used by the running app (`import.meta.env`). [src/config/db.cjs](src/config/db.cjs) is used by sequelize-cli (`process.env` via dotenv; wired up in `.sequelizerc`). Keep the two in sync. The app prefers `VITE_DB_URL` when it is set. The environment is `production` when `import.meta.env.PROD`, otherwise `development`.
 
 **Uploads** ([src/routes/upload.js](src/routes/upload.js), [src/utilities/file.js](src/utilities/file.js)): multipart `file` plus `generatedFileName`. Images are optimized/resized through the TinyPNG API (skipped for PDFs, `?noOptimize`, or `VITE_OPTIMIZE_IMAGES=false`) and then uploaded to S3 under `VITE_UPLOAD_DIR`.
-
-**Feedback** (`POST /api/feedback`) verifies reCAPTCHA and sends email via nodemailer. It builds its own 422 errors rather than relying on model validation.
 
 Source is mostly plain JS with a few `.ts` files. `tsc` runs in strict mode but only for type-checking (`noEmit`).
 

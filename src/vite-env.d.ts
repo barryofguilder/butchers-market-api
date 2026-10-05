@@ -8,16 +8,10 @@ interface ImportMetaEnv {
   readonly VITE_DB_NAME: string;
   readonly VITE_DB_PASSWORD: string;
   readonly VITE_DB_USERNAME: string;
-  readonly VITE_EMAIL_PASSWORD: string;
-  readonly VITE_EMAIL_USER: string;
-  readonly VITE_FEEDBACK_EMAIL_FROM: string;
-  readonly VITE_FEEDBACK_EMAIL_SUBJECT: string;
-  readonly VITE_FEEDBACK_EMAIL_TO: string;
   readonly VITE_OPTIMIZE_API_KEY: string;
   readonly VITE_OPTIMIZE_IMAGE_MAX_DIMENSION: string;
   readonly VITE_OPTIMIZE_IMAGES: string;
   readonly VITE_PORT: string;
-  readonly VITE_RECAPTCHA_KEY: string;
   readonly VITE_S3_BUCKET: string;
   readonly VITE_TOKEN_PASSWORD: string;
   readonly VITE_TOKEN_SECRET: string;

@@ -36,7 +36,7 @@ app.use(
       return true;
     }
 
-    const publicRoutes = [`${NAMESPACE}/feedback`, `${NAMESPACE}/token`];
+    const publicRoutes = [`${NAMESPACE}/token`];
 
     return publicRoutes.some((route) => {
       return url.startsWith(route);
