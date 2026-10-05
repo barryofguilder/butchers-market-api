@@ -4,5 +4,9 @@
  * @returns Returns the name of the current environment.
  */
 export function getEnvironment() {
+  if (import.meta.env.MODE === 'test') {
+    return 'test';
+  }
+
   return import.meta.env.PROD === true ? 'production' : 'development';
 }

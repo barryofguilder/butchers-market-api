@@ -13,6 +13,7 @@ npm run dev          # Vite dev server (vite-plugin-node, Koa adapter) with HMR 
 npm run build        # tsc type-check + vite build -> dist/index.cjs
 npm start            # run the production build
 npm run lint         # eslint (prettier enforced via eslint-plugin-prettier)
+npm test             # vitest run; npm run test:watch for watch mode
 
 npm run db:create    # sequelize-cli db:create
 npm run db:migrate
@@ -22,15 +23,15 @@ npx sequelize-cli migration:generate --name <name>
 npx sequelize-cli seed:generate --name <name>
 ```
 
-There is no test suite.
+Tests live in `tests/` and use Vitest + supertest against `app.callback()` (no server, no port). In test mode (`import.meta.env.MODE === 'test'`) `getEnvironment()` returns `test`, which points Sequelize at an in-memory SQLite database; each test file resets it with `resetDatabase()` from `tests/helpers.js`. `vitest.config.js` is separate from `vite.config.js` so vite-plugin-node doesn't boot the server, and it pins the `VITE_` vars tests rely on.
 
 Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix because app code reads them via `import.meta.env`.
 
 ## Architecture
 
-**Request pipeline** ([src/index.js](src/index.js)): error middleware → logger (skips the `/api/` health check) → CORS → koa-body (multipart enabled) → koa-jwt → router. JWT auth is required for every non-`GET` request except `/api/feedback` and `/api/token`. Tokens come from `POST /api/token`, which checks a single username/password from env and issues a 30-day JWT.
+**Request pipeline** ([src/app.js](src/app.js); [src/index.js](src/index.js) only calls `listen`): error middleware → logger (skips the `/api/` health check) → CORS → koa-body (multipart enabled) → koa-jwt → router. JWT auth is required for every non-`GET` request except `/api/feedback` and `/api/token`. Tokens come from `POST /api/token`, which checks a single username/password from env and issues a 30-day JWT.
 
-**The app object is the service locator.** `app.db` (Sequelize models) and `app.serialize` (JSON:API serializer) are attached in `index.js`. Route handlers reach them via `ctx.app.db.<Model>` and `ctx.app.serialize('<type>', ...)` rather than importing them.
+**The app object is the service locator.** `app.db` (Sequelize models) and `app.serialize` (JSON:API serializer) are attached in `app.js`. Route handlers reach them via `ctx.app.db.<Model>` and `ctx.app.serialize('<type>', ...)` rather than importing them.
 
 **Adding a resource touches four places, each with a manual registry:**
 1. Model in `src/db/models/<name>.js` (a `(sequelize) => sequelize.define(...)` factory), registered by hand in [src/db/models/index.js](src/db/models/index.js). There is no auto-loading.
