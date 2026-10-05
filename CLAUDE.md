@@ -35,7 +35,7 @@ Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix becaus
 
 **Adding a resource touches four places, each with a manual registry:**
 1. Model in `src/db/models/<name>.js` (a `(sequelize) => sequelize.define(...)` factory), registered by hand in [src/db/models/index.js](src/db/models/index.js). There is no auto-loading.
-2. Migration in `src/db/migrations/` (CommonJS; existing migrations wrap changes in `queryInterface.sequelize.transaction`).
+2. Migration in `src/db/migrations/` (CommonJS; a `package.json` with `"type": "commonjs"` in `migrations/` and `seeders/` makes Node load them that way despite the root `"type": "module"`. Existing migrations wrap changes in `queryInterface.sequelize.transaction`).
 3. Serializer in `src/resources/<name>.js` returning `{ type, id, attributes, links }`, registered in [src/resources/index.js](src/resources/index.js). `serialize()` wraps the result in `{ data }` and converts ids to strings.
 4. Router in `src/routes/<name>.js` exporting `router.routes()`, mounted under the `/api` namespace in [src/routes/index.js](src/routes/index.js). Route paths are plural kebab-case (e.g. `/api/grab-and-gos`).
 
