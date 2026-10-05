@@ -17,6 +17,7 @@
     "db:seed:undo": "sequelize-cli db:seed:undo",
     "db:unseed": "sequelize-cli db:seed:undo:all",
     "lint": "eslint . --cache",
+    "generate:model": "node scripts/generate-model.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "prettier": "prettier --write \"**/*.js\""

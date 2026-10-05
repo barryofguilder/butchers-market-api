@@ -19,6 +19,7 @@ npm run db:create    # sequelize-cli db:create
 npm run db:migrate
 npm run db:seed      # db:seed:all; db:unseed undoes all, db:seed:undo undoes the last
 
+npm run generate:model -- <ModelName> <field:type> ...  # migration + TypeScript model
 npx sequelize-cli migration:generate --name <name>
 npx sequelize-cli seed:generate --name <name>
 ```
@@ -34,7 +35,7 @@ Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix becaus
 **The app object is the service locator.** `app.db` (Sequelize models) and `app.serialize` (JSON:API serializer) are attached in `app.ts`. Route handlers reach them via `ctx.app.db.<Model>` and `ctx.app.serialize('<type>', ...)` rather than importing them. Both are typed through a `declare module 'koa'` augmentation of `DefaultContext` in `app.ts`, so `ctx.app.db.MeatBundle` is a typed model class.
 
 **Adding a resource touches four places, each with a manual registry:**
-1. Model in `src/db/models/<name>.ts`: a class extending [`AppModel`](src/db/models/app-model.ts) with `declare`d fields typed via `InferAttributes`/`InferCreationAttributes`, plus a default-exported `(sequelize) => Model.init(...)` function. Registered by hand in [src/db/models/index.ts](src/db/models/index.ts). There is no auto-loading. List `id`, `createdAt` and `updatedAt` in `init` with `allowNull: false` (the typings require them, and listing them otherwise drops the `NOT NULL` Sequelize would add).
+1. Model in `src/db/models/<name>.ts` (start with `npm run generate:model`, which also writes the migration; don't use `sequelize-cli model:generate` directly, it writes a JavaScript model): a class extending [`AppModel`](src/db/models/app-model.ts) with `declare`d fields typed via `InferAttributes`/`InferCreationAttributes`, plus a default-exported `(sequelize) => Model.init(...)` function. Registered by hand in [src/db/models/index.ts](src/db/models/index.ts). There is no auto-loading. List `id`, `createdAt` and `updatedAt` in `init` with `allowNull: false` (the typings require them, and listing them otherwise drops the `NOT NULL` Sequelize would add).
 2. Migration in `src/db/migrations/` (CommonJS; a `package.json` with `"type": "commonjs"` in `migrations/` and `seeders/` makes Node load them that way despite the root `"type": "module"`. Existing migrations wrap changes in `queryInterface.sequelize.transaction`).
 3. Serializer in `src/resources/<name>.ts` taking the model class and returning a `ResourceObject` (`{ type, id, attributes, links }`), registered in [src/resources/index.ts](src/resources/index.ts). `serialize()` wraps the result in `{ data }`, converts ids to strings, and only accepts the model that matches the resource type.
 4. Router in `src/routes/<name>.js` exporting `router.routes()`, mounted under the `/api` namespace in [src/routes/index.js](src/routes/index.js). Route paths are plural kebab-case (e.g. `/api/grab-and-gos`).

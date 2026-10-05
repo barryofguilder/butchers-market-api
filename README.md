@@ -59,19 +59,16 @@ List of common scripts you'll use with Sequelize.
 
 ### Create Model
 
-Generating a model creates the migration for a new database table. In the example below, we are
-creating a `Special` model with a single attribute of `title`.
+Creates a TypeScript model and the migration for its database table. In the example below, we are
+creating a `Special` model with `title` and `price` attributes.
 
 ```bash
-npx sequelize-cli model:generate --name Special --attributes title:string
+npm run generate:model -- Special title:string price:decimal
 ```
 
-The generator also writes a JavaScript model file (`src/db/models/special.js`), but it doesn't
-match how models are written in this project. Delete it, then:
-
-1. Create `src/db/models/special.ts` by copying an existing model such as
-   [deli-item.ts](src/db/models/deli-item.ts). Models are TypeScript classes that extend `AppModel`.
-2. Register it in [src/db/models/index.ts](src/db/models/index.ts).
+This runs `sequelize-cli model:generate` for the migration, then replaces the JavaScript model it
+writes with `src/db/models/special.ts` in this project's style. Every attribute starts out optional;
+the command prints the next steps, including marking required fields and registering the model.
 
 A new resource also needs a serializer and a router. See "Adding a resource" in
 [CLAUDE.md](CLAUDE.md) for all four steps.
