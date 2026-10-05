@@ -1,6 +1,8 @@
 import NAMESPACE from '../constants/namespace';
+import type { GrabAndGo } from '../db/models/grab-and-go';
+import type { ResourceObject } from './types';
 
-export default (model) => {
+export default (model: GrabAndGo): ResourceObject => {
   return {
     type: 'grab-and-gos',
     id: model.id,

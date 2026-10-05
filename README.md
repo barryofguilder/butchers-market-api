@@ -8,7 +8,6 @@ You will need the following things properly installed on your computer.
 
 - [Git](https://git-scm.com/)
 - [Volta](https://volta.sh/)
-- [Google Chrome](https://google.com/chrome/)
 
 ## Installation
 
@@ -32,6 +31,13 @@ You will need the following things properly installed on your computer.
 
 To debug the application, you can use VS Code. Make sure you select the `dev` script.
 
+## Running Tests
+
+- `npm test` runs the test suite once
+- `npm run test:watch` reruns tests as files change
+
+Tests use an in-memory SQLite database, so they don't need Postgres or a `.env` file.
+
 ## Deployment
 
 Deployed using [Render](https://render.com)!
@@ -53,12 +59,19 @@ List of common scripts you'll use with Sequelize.
 
 ### Create Model
 
-Creating a new model will create a new database table and a corresponding model. In the example
-below, we are creating a `Special` model with a single attribute of `title`.
+Creates a TypeScript model and the migration for its database table. In the example below, we are
+creating a `Special` model with `title` and `price` attributes.
 
 ```bash
-npx sequelize-cli model:generate --name Special --attributes title:string
+npm run generate:model -- Special title:string price:decimal
 ```
+
+This runs `sequelize-cli model:generate` for the migration, then replaces the JavaScript model it
+writes with `src/db/models/special.ts` in this project's style. Every attribute starts out optional;
+the command prints the next steps, including marking required fields and registering the model.
+
+A new resource also needs a serializer and a router. See "Adding a resource" in
+[CLAUDE.md](CLAUDE.md) for all four steps.
 
 ### Create Migration
 

@@ -1,4 +1,6 @@
 // This file is used when running the server.
+import type { Options } from 'sequelize';
+import type { Environment } from '../utilities/environment';
 
 export default {
   development: {
@@ -27,4 +29,4 @@ export default {
     password: import.meta.env.VITE_DB_PASSWORD,
     database: import.meta.env.VITE_DB_NAME,
   },
-};
+} satisfies Record<Environment, Options>;

@@ -1,7 +1,7 @@
 {
   "name": "butchers-market-api",
   "version": "3.0.0",
-  "main": "src/index.js",
+  "main": "src/index.ts",
   "author": "Jason Barry <jbarry@hey.com>",
   "license": "MIT",
   "private": true,
@@ -17,6 +17,7 @@
     "db:seed:undo": "sequelize-cli db:seed:undo",
     "db:unseed": "sequelize-cli db:seed:undo:all",
     "lint": "eslint . --cache",
+    "generate:model": "node scripts/generate-model.js",
     "test": "vitest run",
     "test:watch": "vitest",
     "prettier": "prettier --write \"**/*.js\""
@@ -37,6 +38,8 @@
   },
   "devDependencies": {
     "@types/koa": "^3.0.3",
+    "@types/koa__cors": "^5.0.1",
+    "@types/koa-logger": "^3.1.5",
     "@types/node": "^22.10.2",
     "@typescript-eslint/parser": "^8.18.0",
     "eslint": "^8.57.1",
@@ -47,7 +50,7 @@
     "sequelize-cli": "^6.6.2",
     "sqlite3": "^6.0.1",
     "supertest": "^7.3.1",
-    "typescript": "~5.6.2",
+    "typescript": "~6.0.3",
     "vite": "^8.3.2",
     "vite-plugin-node": "^8.0.0",
     "vitest": "^5.0.3"

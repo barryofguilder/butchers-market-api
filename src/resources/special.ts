@@ -1,6 +1,8 @@
 import NAMESPACE from '../constants/namespace';
+import type { Special } from '../db/models/special';
+import type { ResourceObject } from './types';
 
-export default (model) => {
+export default (model: Special): ResourceObject => {
   return {
     type: 'specials',
     id: model.id,
