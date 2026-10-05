@@ -25,10 +25,16 @@ export default function serialize(type, model) {
   let data;
 
   if (Array.isArray(model)) {
-    data = model.map(resource);
+    data = model.map((item) => toResourceObject(resource, item));
   } else {
-    data = resource(model);
+    data = toResourceObject(resource, model);
   }
 
   return { data };
+}
+
+// JSON:API requires resource object ids to be strings
+function toResourceObject(resource, model) {
+  const object = resource(model);
+  return { ...object, id: String(object.id) };
 }
