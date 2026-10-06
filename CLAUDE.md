@@ -51,7 +51,7 @@ Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix becaus
 
 **Uploads** ([src/routes/upload.ts](src/routes/upload.ts), [src/utilities/file.ts](src/utilities/file.ts)): multipart `file` plus `generatedFileName`. Images are optimized/resized through the TinyPNG API (skipped for PDFs, `?noOptimize`, or `VITE_OPTIMIZE_IMAGES=false`) and then uploaded to S3 under `VITE_UPLOAD_DIR`.
 
-Source and tests are TypeScript. Migrations and seeders stay CommonJS `.js` because sequelize-cli loads them directly, and `scripts/generate-model.js` is run by plain `node`. `tsc` runs in strict mode over `src/`, `tests/` and both Vite configs, but only for type-checking (`noEmit`). ESLint uses typescript-eslint's `recommended-type-checked` rules; the `no-unsafe-*` and `require-await` rules are off in `tests/` because supertest response bodies are `any`.
+Source and tests are TypeScript. Migrations and seeders stay CommonJS `.js` because sequelize-cli loads them directly, and `scripts/generate-model.js` is run by plain `node`. `tsc` runs in strict mode over `src/`, `tests/` and both Vite configs, but only for type-checking (`noEmit`). ESLint 10 is configured in [eslint.config.js](eslint.config.js) (flat config). It uses typescript-eslint's `recommended-type-checked` rules for `.ts` files, with the `no-unsafe-*` and `require-await` rules off in `tests/` because supertest response bodies are `any`. Migrations, seeders and `.cjs` files are linted as CommonJS with `eslint-plugin-n`.
 
 ## Conventions
 
