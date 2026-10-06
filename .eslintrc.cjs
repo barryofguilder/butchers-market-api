@@ -18,10 +18,28 @@ module.exports = {
   overrides: [
     {
       files: ['**/*.ts'],
+      parserOptions: {
+        project: './tsconfig.json',
+        tsconfigRootDir: __dirname,
+      },
+      extends: [
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended-type-checked',
+        'plugin:prettier/recommended',
+      ],
       rules: {
-        // TypeScript reports these itself, and the core rules misfire on types.
+        // TypeScript reports undefined names itself.
         'no-undef': 'off',
-        'no-unused-vars': 'off',
+      },
+    },
+    {
+      files: ['tests/**/*.ts'],
+      rules: {
+        // Response bodies from supertest are untyped JSON (`any`), and mocks are async stubs.
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/require-await': 'off',
       },
     },
     // node files

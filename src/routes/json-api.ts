@@ -17,5 +17,5 @@ export function getAttributes<T>(ctx: { request: { body?: unknown } }): T {
 /** Reads the ordered `[{ id }]` array sent to `POST /reorder` endpoints. */
 export function getReorderItems(ctx: { request: { body?: unknown } }): { id: number | string }[] {
   const body = ctx.request.body;
-  return typeof body === 'string' ? JSON.parse(body) : (body as { id: number | string }[]);
+  return (typeof body === 'string' ? JSON.parse(body) : body) as { id: number | string }[];
 }

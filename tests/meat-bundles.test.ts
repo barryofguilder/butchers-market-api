@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 
-import { authHeader, db, jsonApiBody, request, resetDatabase } from './helpers';
+import type { CreationAttributes } from 'sequelize';
+import type { MeatBundle } from '../src/db/models/meat-bundle';
+import { authHeader, db, jsonApiBody, request, resetDatabase, type ResourceJson } from './helpers';
 
 beforeEach(resetDatabase);
 
-function createBundle(attrs = {}) {
+function createBundle(attrs: Partial<CreationAttributes<MeatBundle>> = {}) {
   return db.MeatBundle.create({
     title: 'Grill Pack',
     price: 49.99,
@@ -24,7 +26,10 @@ describe('GET /api/meat-bundles', () => {
     const res = await request().get('/api/meat-bundles');
 
     expect(res.status).toBe(200);
-    expect(res.body.data.map((b) => b.id)).toEqual([String(first.id), String(second.id)]);
+    expect(res.body.data.map((b: ResourceJson) => b.id)).toEqual([
+      String(first.id),
+      String(second.id),
+    ]);
     expect(res.body.data[0]).toMatchObject({
       type: 'meat-bundles',
       attributes: { title: 'First', items: ['2 ribeyes', '1 lb sausage'] },
@@ -40,8 +45,11 @@ describe('GET /api/meat-bundles', () => {
     const featured = await request().get('/api/meat-bundles?filter[featured]=true');
     const visible = await request().get('/api/meat-bundles?filter[isHidden]=false');
 
-    expect(featured.body.data.map((b) => b.attributes.title)).toEqual(['Featured']);
-    expect(visible.body.data.map((b) => b.attributes.title).sort()).toEqual(['Featured', 'Plain']);
+    expect(featured.body.data.map((b: ResourceJson) => b.attributes.title)).toEqual(['Featured']);
+    expect(visible.body.data.map((b: ResourceJson) => b.attributes.title).sort()).toEqual([
+      'Featured',
+      'Plain',
+    ]);
   });
 });
 
@@ -80,7 +88,7 @@ describe('POST /api/meat-bundles', () => {
     expect(res.body.data.attributes).toMatchObject({ displayOrder: 4, items: ['a', 'b'] });
 
     const saved = await db.MeatBundle.findByPk(res.body.data.id);
-    expect(saved.items).toBe('a|b');
+    expect(saved?.items).toBe('a|b');
   });
 
   test('returns 422 with a pointer for invalid attributes', async () => {
@@ -138,6 +146,6 @@ describe('POST /api/meat-bundles/reorder', () => {
     expect(res.status).toBe(201);
 
     const list = await request().get('/api/meat-bundles');
-    expect(list.body.data.map((x) => x.attributes.title)).toEqual(['C', 'A', 'B']);
+    expect(list.body.data.map((x: ResourceJson) => x.attributes.title)).toEqual(['C', 'A', 'B']);
   });
 });

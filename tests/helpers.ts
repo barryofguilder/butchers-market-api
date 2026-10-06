@@ -25,6 +25,14 @@ export function authHeader() {
   return { Authorization: `Bearer ${token}` };
 }
 
-export function jsonApiBody(type, attributes) {
+/** A serialized resource as it appears in a response body. */
+export interface ResourceJson {
+  type: string;
+  id: string;
+  attributes: Record<string, unknown>;
+  links: { self: string };
+}
+
+export function jsonApiBody(type: string, attributes: Record<string, unknown>) {
   return { data: { type, attributes } };
 }
