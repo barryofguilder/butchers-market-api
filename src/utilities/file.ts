@@ -12,8 +12,14 @@ const S3_CONFIG = {
     secretAccessKey: import.meta.env.VITE_AWS_SECRET_ACCESS_KEY,
   },
 };
-const IMAGE_EXTENTIONS = ['gif', 'jpg', 'jpeg', 'png'];
-const PDF_EXTENTIONS = ['pdf'];
+// The image types TinyPNG accepts, which is every image type we can upload.
+const IMAGE_CONTENT_TYPES = new Map([
+  ['jpg', 'image/jpeg'],
+  ['jpeg', 'image/jpeg'],
+  ['png', 'image/png'],
+  ['webp', 'image/webp'],
+  ['avif', 'image/avif'],
+]);
 const OPTIMIZE_API_KEY = import.meta.env.VITE_OPTIMIZE_API_KEY;
 const OPTIMIZE_IMAGE_MAX_DIMENSION = import.meta.env.VITE_OPTIMIZE_IMAGE_MAX_DIMENSION
   ? parseInt(import.meta.env.VITE_OPTIMIZE_IMAGE_MAX_DIMENSION)
@@ -39,65 +45,83 @@ interface ResizeOptions {
   resize: { method: 'scale'; width?: number; height?: number };
 }
 
-export function isPdf(filePath: string) {
-  const extension = path.extname(filePath).replace('.', '');
-  return PDF_EXTENTIONS.includes(extension);
+export function getExtension(fileName: string) {
+  return path.extname(fileName).slice(1).toLowerCase();
 }
 
-function calculateContentType(filePath: string) {
-  const extension = path.extname(filePath).replace('.', '');
-  let contentType = 'application/octet-stream';
+export function isPdf(fileName: string) {
+  return getExtension(fileName) === 'pdf';
+}
 
-  if (IMAGE_EXTENTIONS.includes(extension)) {
-    contentType = `image/${extension}`;
-  } else if (PDF_EXTENTIONS.includes(extension)) {
-    contentType = 'application/pdf';
+export function isSupportedImage(fileName: string) {
+  return IMAGE_CONTENT_TYPES.has(getExtension(fileName));
+}
+
+/**
+ * Checks if a file is a HEIC/HEIF photo, the iPhone default, which TinyPNG can't optimize.
+ *
+ * @param fileName The name of the file.
+ * @param mimeType (Optional) The type the browser sent with the file, which catches a HEIC photo
+ *   with a different extension.
+ * @returns Returns true if the file is a HEIC/HEIF photo, otherwise false.
+ */
+export function isHeic(fileName: string, mimeType?: string | null) {
+  return (
+    ['heic', 'heif'].includes(getExtension(fileName)) ||
+    mimeType === 'image/heic' ||
+    mimeType === 'image/heif'
+  );
+}
+
+/**
+ * Checks that a file name has no directory parts, so it can't point outside the upload directory.
+ *
+ * @param fileName The file name to check.
+ * @returns Returns true if the file name has no directory parts, otherwise false.
+ */
+export function isPlainFileName(fileName: string) {
+  return (
+    fileName !== '' &&
+    fileName !== '.' &&
+    fileName !== '..' &&
+    !fileName.includes('\\') &&
+    path.basename(fileName) === fileName
+  );
+}
+
+export function calculateContentType(fileName: string) {
+  if (isPdf(fileName)) {
+    return 'application/pdf';
   }
 
-  return contentType;
+  return IMAGE_CONTENT_TYPES.get(getExtension(fileName)) ?? 'application/octet-stream';
 }
 
 export async function uploadFile(file: File, fileName: string) {
-  const fileStream = fs.createReadStream(file.filepath);
   const filePath = path.join(UPLOAD_DIRECTORY, fileName);
-  const uploadParams = {
-    Bucket: import.meta.env.VITE_S3_BUCKET,
-    Body: fileStream,
-    Key: filePath,
-    ContentType: calculateContentType(filePath),
-  };
 
-  try {
-    return new Upload({
-      client: new S3(S3_CONFIG),
-      params: uploadParams,
-    }).done();
-  } catch (ex) {
-    console.error(`Failed to upload image '${fileName}'`, ex);
-    return null;
-  }
+  await new Upload({
+    client: new S3(S3_CONFIG),
+    params: {
+      Bucket: import.meta.env.VITE_S3_BUCKET,
+      Body: fs.createReadStream(file.filepath),
+      Key: filePath,
+      ContentType: calculateContentType(fileName),
+    },
+  }).done();
 }
 
 export async function deleteUploadedFile(fileName: string) {
-  const filePath = path.join(import.meta.env.VITE_UPLOAD_DIR, fileName);
-  const deleteParams = {
+  await new S3(S3_CONFIG).deleteObject({
     Bucket: import.meta.env.VITE_S3_BUCKET,
-    Key: filePath,
-  };
-
-  try {
-    return new S3(S3_CONFIG).deleteObject(deleteParams);
-  } catch (ex) {
-    console.error(`Failed to delete image '${fileName}'`, ex);
-    return null;
-  }
+    Key: path.join(UPLOAD_DIRECTORY, fileName),
+  });
 }
 
 export async function optimizeImage(file: File) {
-  const fileStream = fs.createReadStream(file.filepath);
-  const apiKey = Buffer.from(OPTIMIZE_API_KEY).toString('base64');
-
   try {
+    const fileStream = fs.createReadStream(file.filepath);
+    const apiKey = Buffer.from(OPTIMIZE_API_KEY).toString('base64');
     const response = await fetch('https://api.tinify.com/shrink', {
       method: 'POST',
       headers: {
@@ -188,23 +212,15 @@ export async function optimizeImage(file: File) {
 }
 
 export async function uploadOptimizedFile(arrayBuffer: ArrayBuffer, fileName: string) {
-  const filePath = path.join(UPLOAD_DIRECTORY, fileName);
-  const uploadParams = {
-    Bucket: import.meta.env.VITE_S3_BUCKET,
-    Body: new Uint8Array(arrayBuffer),
-    Key: filePath,
-    ContentType: calculateContentType(filePath),
-  };
-
-  try {
-    return new Upload({
-      client: new S3(S3_CONFIG),
-      params: uploadParams,
-    }).done();
-  } catch (ex) {
-    console.error(`Failed to upload image '${fileName}'`, ex);
-    return null;
-  }
+  await new Upload({
+    client: new S3(S3_CONFIG),
+    params: {
+      Bucket: import.meta.env.VITE_S3_BUCKET,
+      Body: new Uint8Array(arrayBuffer),
+      Key: path.join(UPLOAD_DIRECTORY, fileName),
+      ContentType: calculateContentType(fileName),
+    },
+  }).done();
 }
 
 export async function deleteLocalFile(file: File) {

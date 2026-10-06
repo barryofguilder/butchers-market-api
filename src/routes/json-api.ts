@@ -1,3 +1,5 @@
+import { httpError } from '../errors/http-error';
+
 interface JsonApiDocument<T> {
   data: {
     attributes: T;
@@ -14,9 +16,7 @@ export function getAttributes<T>(ctx: { request: { body?: unknown } }): T {
   const body = ctx.request.body as Partial<JsonApiDocument<T>> | undefined;
 
   if (!body?.data?.attributes) {
-    throw Object.assign(new Error('Expected a JSON:API document with data.attributes'), {
-      status: 400,
-    });
+    throw httpError(400, 'Expected a JSON:API document with data.attributes');
   }
 
   return body.data.attributes;
