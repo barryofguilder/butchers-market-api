@@ -32,6 +32,6 @@ describe('show endpoints', () => {
     const res = await request().get(`/api/${route}/999`);
 
     expect(res.status).toBe(404);
-    expect(res.body.errors[0].code).toBe(404);
+    expect(res.body.errors[0].status).toBe('404');
   });
 });

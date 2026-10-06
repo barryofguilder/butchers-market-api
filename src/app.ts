@@ -23,8 +23,8 @@ declare module 'koa' {
   }
 }
 
-app.use(errorMiddleware);
-
+// The logger wraps the error middleware so it logs the status that is actually sent. Inside it,
+// koa-logger would log thrown errors (such as a 404's NotFoundError) as 500s.
 app.use(async (ctx, next) => {
   // Ignore logging health checks and test requests.
   if (ctx.url === `${NAMESPACE}/` || config.environment === 'test') {
@@ -33,6 +33,8 @@ app.use(async (ctx, next) => {
     await logger()(ctx, next);
   }
 });
+
+app.use(errorMiddleware);
 
 app.use(cors());
 app.use(koaBody({ multipart: true }));

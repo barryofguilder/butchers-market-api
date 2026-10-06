@@ -21,7 +21,7 @@ describe('POST /api/token', () => {
       .send(jsonApiBody('tokens', { username: 'butcher', password: 'wrong' }));
 
     expect(res.status).toBe(401);
-    expect(res.body.errors[0].code).toBe(401);
+    expect(res.body.errors[0]).toMatchObject({ status: '401' });
   });
 
   test('rejects blank credentials', async () => {

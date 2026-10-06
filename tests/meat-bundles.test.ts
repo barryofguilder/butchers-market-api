@@ -68,7 +68,7 @@ describe('GET /api/meat-bundles/:id', () => {
 
     expect(res.status).toBe(404);
     expect(res.body.errors[0]).toMatchObject({
-      code: 404,
+      status: '404',
       detail: "MeatBundle not found with the id '999'",
     });
   });
@@ -100,6 +100,7 @@ describe('POST /api/meat-bundles', () => {
     expect(res.status).toBe(422);
     expect(res.body.errors).toContainEqual(
       expect.objectContaining({
+        status: '422',
         title: "can't be blank",
         source: { pointer: '/data/attributes/title' },
       })

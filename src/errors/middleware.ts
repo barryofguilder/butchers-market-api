@@ -1,3 +1,4 @@
+import { STATUS_CODES } from 'http';
 import type { Middleware } from 'koa';
 import { ValidationError } from 'sequelize';
 import NotFoundError from './not-found';
@@ -12,7 +13,7 @@ const errorMiddleware: Middleware = async (ctx, next) => {
       return (ctx.body = {
         errors: [
           {
-            code: 401,
+            status: '401',
             title: 'Unauthorized',
             detail: 'Protected resource, use Authorization header to get access',
           },
@@ -26,7 +27,7 @@ const errorMiddleware: Middleware = async (ctx, next) => {
       return (ctx.body = {
         errors: [
           {
-            code: 404,
+            status: '404',
             title: 'Not Found',
             detail: `${err.modelName} not found with the id '${err.id}'`,
           },
@@ -43,8 +44,7 @@ const errorMiddleware: Middleware = async (ctx, next) => {
           const title = valError.validatorKey === 'notEmpty' ? `can't be blank` : valError.message;
 
           return {
-            status: 422,
-            code: 100,
+            status: '422',
             title,
             source: {
               pointer: `/data/attributes/${valError.path}`,
@@ -54,18 +54,46 @@ const errorMiddleware: Middleware = async (ctx, next) => {
       });
     }
 
+    // Middleware signals client errors with a 4xx `status` (e.g. koa-body's 400 for malformed
+    // JSON). Like http-errors' `expose`, their messages are safe to send back.
+    if (isClientError(err)) {
+      ctx.status = err.status;
+
+      return (ctx.body = {
+        errors: [
+          {
+            status: String(err.status),
+            title: STATUS_CODES[err.status] ?? 'Error',
+            detail: err.message,
+          },
+        ],
+      });
+    }
+
+    // Anything else is unexpected. Koa's default error handler logs it, and the message stays
+    // out of the response since it can contain SQL or other internals.
+    ctx.app.emit('error', err, ctx);
     ctx.status = 500;
 
     return (ctx.body = {
       errors: [
         {
-          code: 500,
+          status: '500',
           title: 'Internal Server Error',
-          detail: err instanceof Error ? err.message : String(err),
         },
       ],
     });
   }
 };
+
+function isClientError(err: unknown): err is Error & { status: number } {
+  return (
+    err instanceof Error &&
+    'status' in err &&
+    typeof err.status === 'number' &&
+    err.status >= 400 &&
+    err.status < 500
+  );
+}
 
 export default errorMiddleware;
