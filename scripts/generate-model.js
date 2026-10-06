@@ -1,7 +1,7 @@
 // Generates a migration with sequelize-cli and a TypeScript model in this project's style.
 // sequelize-cli can only write JavaScript models, so its model file is replaced.
 //
-// Usage: npm run generate:model -- <ModelName> <field:type> [field:type ...]
+// Usage: pnpm generate:model <ModelName> <field:type> [field:type ...]
 
 import { spawnSync } from 'child_process';
 import fs from 'fs';
@@ -37,8 +37,10 @@ function fail(message) {
   process.exit(1);
 }
 
-const [name, ...attributeArgs] = process.argv.slice(2);
-const usage = 'Usage: npm run generate:model -- <ModelName> <field:type> [field:type ...]';
+const args = process.argv.slice(2);
+// pnpm passes a `--` separator through to the script, unlike npm.
+const [name, ...attributeArgs] = args[0] === '--' ? args.slice(1) : args;
+const usage = 'Usage: pnpm generate:model <ModelName> <field:type> [field:type ...]';
 
 if (!name || attributeArgs.length === 0) {
   fail(usage);

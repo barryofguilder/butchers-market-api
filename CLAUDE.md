@@ -9,24 +9,26 @@ Koa + Sequelize (Postgres) JSON:API backend for The Butcher's Market website. No
 ## Commands
 
 ```bash
-npm run dev          # Vite dev server (vite-plugin-node, Koa adapter) with HMR on VITE_PORT
-npm run build        # tsc type-check + vite build -> dist/index.cjs
-npm start            # run the production build
-npm run lint         # eslint with type-aware typescript-eslint rules (prettier enforced via eslint-plugin-prettier)
-npm test             # vitest run; npm run test:watch for watch mode
+pnpm dev             # Vite dev server (vite-plugin-node, Koa adapter) with HMR on VITE_PORT
+pnpm build           # tsc type-check + vite build -> dist/index.cjs
+pnpm start           # run the production build
+pnpm lint            # eslint with type-aware typescript-eslint rules (prettier enforced via eslint-plugin-prettier)
+pnpm test            # vitest run; pnpm test:watch for watch mode
 
-npm run db:create    # sequelize-cli db:create
-npm run db:migrate
-npm run db:seed      # db:seed:all; db:unseed undoes all, db:seed:undo undoes the last
+pnpm db:create       # sequelize-cli db:create
+pnpm db:migrate
+pnpm db:seed         # db:seed:all; db:unseed undoes all, db:seed:undo undoes the last
 
-npm run generate:model -- <ModelName> <field:type> ...  # migration + TypeScript model
-npx sequelize-cli migration:generate --name <name>
-npx sequelize-cli seed:generate --name <name>
+pnpm generate:model <ModelName> <field:type> ...  # migration + TypeScript model
+pnpm exec sequelize-cli migration:generate --name <name>
+pnpm exec sequelize-cli seed:generate --name <name>
 ```
 
 Tests live in `tests/` and use Vitest + supertest against `app.callback()` (no server, no port). In test mode (`import.meta.env.MODE === 'test'`) `getEnvironment()` returns `test`, which points Sequelize at an in-memory SQLite database; each test file resets it with `resetDatabase()` from `tests/helpers.ts`. `vitest.config.ts` is separate from `vite.config.ts` so vite-plugin-node doesn't boot the server, and it pins the `VITE_` vars tests rely on.
 
 CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs two parallel jobs, Lint (lint + `tsc --noEmit`) and Test, on non-draft PRs (including when a draft is marked ready for review) and on pushes to `master`. It takes the Node version from `volta.node`.
+
+The package manager is pnpm, pinned in `packageManager` and `volta.pnpm`. `pnpm.onlyBuiltDependencies` allows `sqlite3`'s install script (pnpm skips dependency install scripts otherwise), which the tests need for its native binding. Only import packages listed in `package.json`: pnpm doesn't hoist transitive dependencies, so e.g. `formidable`'s types come from the direct `@types/formidable` dependency.
 
 Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix because app code reads them via `import.meta.env`.
 
@@ -37,7 +39,7 @@ Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix becaus
 **The app object is the service locator.** `app.db` (Sequelize models) and `app.serialize` (JSON:API serializer) are attached in `app.ts`. Route handlers reach them via `ctx.app.db.<Model>` and `ctx.app.serialize('<type>', ...)` rather than importing them. Both are typed through a `declare module 'koa'` augmentation of `DefaultContext` in `app.ts`, so `ctx.app.db.MeatBundle` is a typed model class.
 
 **Adding a resource touches four places, each with a manual registry:**
-1. Model in `src/db/models/<name>.ts` (start with `npm run generate:model`, which also writes the migration; don't use `sequelize-cli model:generate` directly, it writes a JavaScript model): a class extending [`AppModel`](src/db/models/app-model.ts) with `declare`d fields typed via `InferAttributes`/`InferCreationAttributes`, plus a default-exported `(sequelize) => Model.init(...)` function. Registered by hand in [src/db/models/index.ts](src/db/models/index.ts). There is no auto-loading. List `id`, `createdAt` and `updatedAt` in `init` with `allowNull: false` (the typings require them, and listing them otherwise drops the `NOT NULL` Sequelize would add).
+1. Model in `src/db/models/<name>.ts` (start with `pnpm generate:model`, which also writes the migration; don't use `sequelize-cli model:generate` directly, it writes a JavaScript model): a class extending [`AppModel`](src/db/models/app-model.ts) with `declare`d fields typed via `InferAttributes`/`InferCreationAttributes`, plus a default-exported `(sequelize) => Model.init(...)` function. Registered by hand in [src/db/models/index.ts](src/db/models/index.ts). There is no auto-loading. List `id`, `createdAt` and `updatedAt` in `init` with `allowNull: false` (the typings require them, and listing them otherwise drops the `NOT NULL` Sequelize would add).
 2. Migration in `src/db/migrations/` (CommonJS; a `package.json` with `"type": "commonjs"` in `migrations/` and `seeders/` makes Node load them that way despite the root `"type": "module"`. Existing migrations wrap changes in `queryInterface.sequelize.transaction`).
 3. Serializer in `src/resources/<name>.ts` taking the model class and returning a `ResourceObject` (`{ type, id, attributes, links }`), registered in [src/resources/index.ts](src/resources/index.ts). `serialize()` wraps the result in `{ data }`, converts ids to strings, and only accepts the model that matches the resource type.
 4. Router in `src/routes/<name>.ts` exporting `router.routes()`, mounted under the `/api` namespace in [src/routes/index.ts](src/routes/index.ts). Route paths are plural kebab-case (e.g. `/api/grab-and-gos`).
