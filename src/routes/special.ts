@@ -1,58 +1,61 @@
 import Router from '@koa/router';
-import Sequelize from 'sequelize';
+import { Op, type CreationAttributes, type InferAttributes, type WhereOptions } from 'sequelize';
+import type { Special } from '../db/models/special';
 import { deleteUploadedFile } from '../utilities/file';
+import { getAttributes, getReorderItems } from './json-api';
 
 const router = new Router();
 
 router.get('/', async (ctx) => {
   const range = ctx.query['filter[range]'];
   const isHidden = ctx.query['filter[isHidden]'];
-  let where = {};
+  const where: {
+    [Op.or]?: WhereOptions<InferAttributes<Special>>[];
+    isHidden?: boolean;
+  } = {};
 
   if (range !== undefined) {
-    let date = new Date();
+    const date = new Date();
     // Set the hours to midnight
     date.setHours(0, 0, 0, 0);
 
-    where = {
-      [Sequelize.Op.or]: [
-        {
-          [Sequelize.Op.and]: [
-            {
-              activeStartDate: {
-                [Sequelize.Op.is]: null,
-              },
+    where[Op.or] = [
+      {
+        [Op.and]: [
+          {
+            activeStartDate: {
+              [Op.is]: null,
             },
-            {
-              activeEndDate: {
-                [Sequelize.Op.is]: null,
-              },
+          },
+          {
+            activeEndDate: {
+              [Op.is]: null,
             },
-          ],
-        },
-        {
-          [Sequelize.Op.and]: [
-            {
-              activeStartDate: {
-                [Sequelize.Op.lte]: date,
-              },
+          },
+        ],
+      },
+      {
+        [Op.and]: [
+          {
+            activeStartDate: {
+              [Op.lte]: date,
             },
-            {
-              activeEndDate: {
-                [Sequelize.Op.gte]: date,
-              },
+          },
+          {
+            activeEndDate: {
+              [Op.gte]: date,
             },
-          ],
-        },
-      ],
-    };
+          },
+        ],
+      },
+    ];
   }
 
   if (isHidden !== undefined) {
     where.isHidden = isHidden === 'true';
   }
 
-  let specials = await ctx.app.db.Special.findAll({
+  const specials = await ctx.app.db.Special.findAll({
     where,
     order: [['title', 'asc']],
   });
@@ -68,16 +71,11 @@ router.get('/:id', async (ctx) => {
 });
 
 router.post('/', async (ctx) => {
-  const attrs = ctx.request.body.data.attributes;
+  const attrs = getAttributes<CreationAttributes<Special>>(ctx);
   const specials = await ctx.app.db.Special.findAll({ order: [['displayOrder', 'desc']] });
+  const displayOrder = specials.length > 0 ? (specials[0].displayOrder ?? 0) + 1 : 1;
 
-  if (specials.length > 0) {
-    attrs.displayOrder = specials[0].displayOrder + 1;
-  } else {
-    attrs.displayOrder = 1;
-  }
-
-  const special = await ctx.app.db.Special.create(attrs);
+  const special = await ctx.app.db.Special.create({ ...attrs, displayOrder });
 
   ctx.status = 201;
   ctx.set('Location', `/specials/${special.id}`);
@@ -86,8 +84,7 @@ router.post('/', async (ctx) => {
 });
 
 router.post('/reorder', async (ctx) => {
-  const items =
-    typeof ctx.request.body === 'string' ? JSON.parse(ctx.request.body) : ctx.request.body;
+  const items = getReorderItems(ctx);
   const specials = await ctx.app.db.Special.findAll();
 
   // Reorder in a transaction so a failed save cannot leave a partial ordering behind.
@@ -111,7 +108,7 @@ router.post('/reorder', async (ctx) => {
 
 router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
-  const attrs = ctx.request.body.data.attributes;
+  const attrs = getAttributes<Partial<CreationAttributes<Special>>>(ctx);
   const special = await ctx.app.db.Special.findOrFail(id);
 
   try {
@@ -134,7 +131,9 @@ router.del('/:id', async (ctx) => {
   const special = await ctx.app.db.Special.findOrFail(id);
 
   try {
-    await deleteUploadedFile(special.imageUrl);
+    if (special.imageUrl) {
+      await deleteUploadedFile(special.imageUrl);
+    }
   } catch (error) {
     console.log(error);
   }

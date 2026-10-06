@@ -1,9 +1,12 @@
 import Router from '@koa/router';
+import type { CreationAttributes } from 'sequelize';
+import type { FeatureFlag } from '../db/models/feature-flag';
+import { getAttributes } from './json-api';
 
 const router = new Router();
 
 router.get('/', async (ctx) => {
-  let flags = await ctx.app.db.FeatureFlag.findAll();
+  const flags = await ctx.app.db.FeatureFlag.findAll();
 
   ctx.body = ctx.app.serialize('feature-flag', flags);
 });
@@ -16,7 +19,7 @@ router.get('/:id', async (ctx) => {
 });
 
 router.post('/', async (ctx) => {
-  const attrs = ctx.request.body.data.attributes;
+  const attrs = getAttributes<CreationAttributes<FeatureFlag>>(ctx);
   const flag = await ctx.app.db.FeatureFlag.create(attrs);
 
   ctx.status = 201;
@@ -27,7 +30,7 @@ router.post('/', async (ctx) => {
 
 router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
-  const attrs = ctx.request.body.data.attributes;
+  const attrs = getAttributes<Partial<CreationAttributes<FeatureFlag>>>(ctx);
   const flag = await ctx.app.db.FeatureFlag.findOrFail(id);
 
   flag.set(attrs);

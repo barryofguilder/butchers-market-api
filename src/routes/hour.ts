@@ -1,9 +1,12 @@
 import Router from '@koa/router';
+import type { CreationAttributes } from 'sequelize';
+import type { Hour } from '../db/models/hour';
+import { getAttributes } from './json-api';
 
 const router = new Router();
 
 router.get('/', async (ctx) => {
-  let hours = await ctx.app.db.Hour.findAll({
+  const hours = await ctx.app.db.Hour.findAll({
     order: [
       ['default', 'desc'],
       ['type', 'desc'],
@@ -22,7 +25,7 @@ router.get('/:id', async (ctx) => {
 });
 
 router.post('/', async (ctx) => {
-  const attrs = ctx.request.body.data.attributes;
+  const attrs = getAttributes<CreationAttributes<Hour>>(ctx);
   const hour = await ctx.app.db.Hour.create(attrs);
 
   ctx.status = 201;
@@ -33,7 +36,7 @@ router.post('/', async (ctx) => {
 
 router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
-  const attrs = ctx.request.body.data.attributes;
+  const attrs = getAttributes<Partial<CreationAttributes<Hour>>>(ctx);
   const hour = await ctx.app.db.Hour.findOrFail(id);
 
   hour.set(attrs);
