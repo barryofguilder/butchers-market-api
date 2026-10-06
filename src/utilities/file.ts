@@ -111,11 +111,21 @@ export async function uploadFile(file: File, fileName: string) {
   }).done();
 }
 
+/**
+ * Deletes a file that a record no longer uses. A failure is logged instead of thrown: the record
+ * has already been saved or deleted, and a leftover file in S3 is better than failing the request.
+ *
+ * @param fileName The name of the uploaded file.
+ */
 export async function deleteUploadedFile(fileName: string) {
-  await new S3(S3_CONFIG).deleteObject({
-    Bucket: import.meta.env.VITE_S3_BUCKET,
-    Key: path.join(UPLOAD_DIRECTORY, fileName),
-  });
+  try {
+    await new S3(S3_CONFIG).deleteObject({
+      Bucket: import.meta.env.VITE_S3_BUCKET,
+      Key: path.join(UPLOAD_DIRECTORY, fileName),
+    });
+  } catch (error) {
+    console.error(`Failed to delete the uploaded file '${fileName}'`, error);
+  }
 }
 
 export async function optimizeImage(file: File) {

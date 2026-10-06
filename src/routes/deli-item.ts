@@ -41,17 +41,14 @@ router.patch('/:id', async (ctx) => {
   const attrs = getAttributes<Partial<CreationAttributes<DeliItem>>>(ctx);
   const deliItem = await ctx.app.db.DeliItem.findOrFail(id);
 
-  try {
-    // Delete the old image path
-    if (deliItem.imageUrl && deliItem.imageUrl !== attrs.imageUrl) {
-      await deleteUploadedFile(deliItem.imageUrl);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-
   deliItem.set(attrs);
+  // Only a different imageUrl replaces the image, and only once the save succeeds.
+  const oldImageUrl = deliItem.changed('imageUrl') ? deliItem.previous('imageUrl') : null;
   await deliItem.save();
+
+  if (oldImageUrl) {
+    await deleteUploadedFile(oldImageUrl);
+  }
 
   ctx.body = ctx.app.serialize('deli-item', deliItem);
 });
@@ -60,15 +57,11 @@ router.del('/:id', async (ctx) => {
   const id = ctx.params.id;
   const deliItem = await ctx.app.db.DeliItem.findOrFail(id);
 
-  try {
-    if (deliItem.imageUrl) {
-      await deleteUploadedFile(deliItem.imageUrl);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-
   await deliItem.destroy();
+
+  if (deliItem.imageUrl) {
+    await deleteUploadedFile(deliItem.imageUrl);
+  }
 
   ctx.status = 204;
   ctx.body = null;

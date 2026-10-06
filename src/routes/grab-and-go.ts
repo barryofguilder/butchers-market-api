@@ -49,17 +49,14 @@ router.patch('/:id', async (ctx) => {
   const attrs = getAttributes<Partial<CreationAttributes<GrabAndGo>>>(ctx);
   const item = await ctx.app.db.GrabAndGo.findOrFail(id);
 
-  try {
-    // Delete the old image path
-    if (item.imageUrl && item.imageUrl !== attrs.imageUrl) {
-      await deleteUploadedFile(item.imageUrl);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
   item.set(attrs);
+  // Only a different imageUrl replaces the image, and only once the save succeeds.
+  const oldImageUrl = item.changed('imageUrl') ? item.previous('imageUrl') : null;
   await item.save();
+
+  if (oldImageUrl) {
+    await deleteUploadedFile(oldImageUrl);
+  }
 
   ctx.body = ctx.app.serialize('grab-and-go', item);
 });
@@ -68,15 +65,11 @@ router.del('/:id', async (ctx) => {
   const id = ctx.params.id;
   const item = await ctx.app.db.GrabAndGo.findOrFail(id);
 
-  try {
-    if (item.imageUrl) {
-      await deleteUploadedFile(item.imageUrl);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
   await item.destroy();
+
+  if (item.imageUrl) {
+    await deleteUploadedFile(item.imageUrl);
+  }
 
   ctx.status = 204;
   ctx.body = null;

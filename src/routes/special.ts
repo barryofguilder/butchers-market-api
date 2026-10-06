@@ -111,17 +111,14 @@ router.patch('/:id', async (ctx) => {
   const attrs = getAttributes<Partial<CreationAttributes<Special>>>(ctx);
   const special = await ctx.app.db.Special.findOrFail(id);
 
-  try {
-    // Delete the old image path
-    if (special.imageUrl && special.imageUrl !== attrs.imageUrl) {
-      await deleteUploadedFile(special.imageUrl);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
   special.set(attrs);
+  // Only a different imageUrl replaces the image, and only once the save succeeds.
+  const oldImageUrl = special.changed('imageUrl') ? special.previous('imageUrl') : null;
   await special.save();
+
+  if (oldImageUrl) {
+    await deleteUploadedFile(oldImageUrl);
+  }
 
   ctx.body = ctx.app.serialize('special', special);
 });
@@ -130,15 +127,11 @@ router.del('/:id', async (ctx) => {
   const id = ctx.params.id;
   const special = await ctx.app.db.Special.findOrFail(id);
 
-  try {
-    if (special.imageUrl) {
-      await deleteUploadedFile(special.imageUrl);
-    }
-  } catch (error) {
-    console.log(error);
-  }
-
   await special.destroy();
+
+  if (special.imageUrl) {
+    await deleteUploadedFile(special.imageUrl);
+  }
 
   ctx.status = 204;
   ctx.body = null;

@@ -24,17 +24,14 @@ router.patch('/:id', async (ctx) => {
   const attrs = getAttributes<Partial<CreationAttributes<Menu>>>(ctx);
   const menu = await ctx.app.db.Menu.findOrFail(id);
 
-  try {
-    // Delete the old file path
-    if (menu.fileUrl && menu.fileUrl !== attrs.fileUrl) {
-      await deleteUploadedFile(menu.fileUrl);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-
   menu.set(attrs);
+  // Only a different fileUrl replaces the file, and only once the save succeeds.
+  const oldFileUrl = menu.changed('fileUrl') ? menu.previous('fileUrl') : null;
   await menu.save();
+
+  if (oldFileUrl) {
+    await deleteUploadedFile(oldFileUrl);
+  }
 
   ctx.body = ctx.app.serialize('menu', menu);
 });
