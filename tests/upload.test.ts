@@ -5,14 +5,14 @@ import { authHeader, request } from './helpers';
 
 // Stub out TinyPNG and S3 so only the multipart parsing and routing are exercised.
 vi.mock('../src/utilities/file', () => ({
-  isPdf: (fileName) => fileName.endsWith('.pdf'),
+  isPdf: (fileName: string) => fileName.endsWith('.pdf'),
   optimizeImage: vi.fn(async () => new ArrayBuffer(8)),
   uploadFile: vi.fn(async () => {}),
   uploadOptimizedFile: vi.fn(async () => {}),
   deleteLocalFile: vi.fn(async (file) => fs.unlinkSync(file.filepath)),
 }));
 
-const file = await import('../src/utilities/file');
+const file = vi.mocked(await import('../src/utilities/file'));
 
 beforeEach(() => {
   vi.clearAllMocks();

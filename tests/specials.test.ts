@@ -1,12 +1,14 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 
-import { db, request, resetDatabase } from './helpers';
+import type { CreationAttributes } from 'sequelize';
+import type { Special } from '../src/db/models/special';
+import { db, request, resetDatabase, type ResourceJson } from './helpers';
 
 beforeEach(resetDatabase);
 
 const DAY = 24 * 60 * 60 * 1000;
 
-function createSpecial(title, attrs = {}) {
+function createSpecial(title: string, attrs: Partial<CreationAttributes<Special>> = {}) {
   return db.Special.create({
     title,
     imageUrl: 'https://example.com/image.jpg',
@@ -37,7 +39,10 @@ describe('GET /api/specials', () => {
     const res = await request().get('/api/specials?filter[range]');
 
     expect(res.status).toBe(200);
-    expect(res.body.data.map((s) => s.attributes.title)).toEqual(['Active', 'Undated']);
+    expect(res.body.data.map((s: ResourceJson) => s.attributes.title)).toEqual([
+      'Active',
+      'Undated',
+    ]);
   });
 
   test('without filters lists every special sorted by title', async () => {
@@ -46,6 +51,6 @@ describe('GET /api/specials', () => {
 
     const res = await request().get('/api/specials');
 
-    expect(res.body.data.map((s) => s.attributes.title)).toEqual(['A', 'B']);
+    expect(res.body.data.map((s: ResourceJson) => s.attributes.title)).toEqual(['A', 'B']);
   });
 });

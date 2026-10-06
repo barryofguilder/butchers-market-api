@@ -12,7 +12,7 @@ Koa + Sequelize (Postgres) JSON:API backend for The Butcher's Market website. No
 npm run dev          # Vite dev server (vite-plugin-node, Koa adapter) with HMR on VITE_PORT
 npm run build        # tsc type-check + vite build -> dist/index.cjs
 npm start            # run the production build
-npm run lint         # eslint (prettier enforced via eslint-plugin-prettier)
+npm run lint         # eslint with type-aware typescript-eslint rules (prettier enforced via eslint-plugin-prettier)
 npm test             # vitest run; npm run test:watch for watch mode
 
 npm run db:create    # sequelize-cli db:create
@@ -24,7 +24,7 @@ npx sequelize-cli migration:generate --name <name>
 npx sequelize-cli seed:generate --name <name>
 ```
 
-Tests live in `tests/` and use Vitest + supertest against `app.callback()` (no server, no port). In test mode (`import.meta.env.MODE === 'test'`) `getEnvironment()` returns `test`, which points Sequelize at an in-memory SQLite database; each test file resets it with `resetDatabase()` from `tests/helpers.js`. `vitest.config.js` is separate from `vite.config.ts` so vite-plugin-node doesn't boot the server, and it pins the `VITE_` vars tests rely on.
+Tests live in `tests/` and use Vitest + supertest against `app.callback()` (no server, no port). In test mode (`import.meta.env.MODE === 'test'`) `getEnvironment()` returns `test`, which points Sequelize at an in-memory SQLite database; each test file resets it with `resetDatabase()` from `tests/helpers.ts`. `vitest.config.ts` is separate from `vite.config.ts` so vite-plugin-node doesn't boot the server, and it pins the `VITE_` vars tests rely on.
 
 Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix because app code reads them via `import.meta.env`.
 
@@ -51,7 +51,7 @@ Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix becaus
 
 **Uploads** ([src/routes/upload.ts](src/routes/upload.ts), [src/utilities/file.ts](src/utilities/file.ts)): multipart `file` plus `generatedFileName`. Images are optimized/resized through the TinyPNG API (skipped for PDFs, `?noOptimize`, or `VITE_OPTIMIZE_IMAGES=false`) and then uploaded to S3 under `VITE_UPLOAD_DIR`.
 
-Source is being converted to TypeScript: everything except `tests/` is `.ts`. Migrations and seeders stay CommonJS `.js` because sequelize-cli loads them directly. `tsc` runs in strict mode but only for type-checking (`noEmit`).
+Source and tests are TypeScript. Migrations and seeders stay CommonJS `.js` because sequelize-cli loads them directly, and `scripts/generate-model.js` is run by plain `node`. `tsc` runs in strict mode over `src/`, `tests/` and both Vite configs, but only for type-checking (`noEmit`). ESLint uses typescript-eslint's `recommended-type-checked` rules; the `no-unsafe-*` and `require-await` rules are off in `tests/` because supertest response bodies are `any`.
 
 ## Conventions
 

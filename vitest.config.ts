@@ -1,9 +1,9 @@
 import { defineConfig } from 'vitest/config';
 
-// Kept separate from vite.config.js so vite-plugin-node doesn't boot the server during tests.
+// Kept separate from vite.config.ts so vite-plugin-node doesn't boot the server during tests.
 export default defineConfig({
   test: {
-    include: ['tests/**/*.test.js'],
+    include: ['tests/**/*.test.ts'],
     // Override values from a local .env so tests never touch a real database.
     env: {
       VITE_DB_URL: '',

@@ -209,9 +209,8 @@ export async function uploadOptimizedFile(arrayBuffer: ArrayBuffer, fileName: st
 
 export async function deleteLocalFile(file: File) {
   try {
-    // Delete local file
-    await fs.unlinkSync(file.filepath);
-  } catch (error) {
+    await fs.promises.unlink(file.filepath);
+  } catch {
     console.error('Failed to delete the local file being uploaded');
   }
 }

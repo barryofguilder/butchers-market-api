@@ -11,7 +11,7 @@ const handleError = () => {
   throw Object.assign(new Error(), { status: 401 });
 };
 
-router.post('/', async (ctx) => {
+router.post('/', (ctx) => {
   const { username, password } = getAttributes<{ username?: string; password?: string }>(ctx);
 
   if (isBlank(username) || isBlank(password)) {
