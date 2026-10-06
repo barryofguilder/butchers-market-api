@@ -26,6 +26,8 @@ npx sequelize-cli seed:generate --name <name>
 
 Tests live in `tests/` and use Vitest + supertest against `app.callback()` (no server, no port). In test mode (`import.meta.env.MODE === 'test'`) `getEnvironment()` returns `test`, which points Sequelize at an in-memory SQLite database; each test file resets it with `resetDatabase()` from `tests/helpers.ts`. `vitest.config.ts` is separate from `vite.config.ts` so vite-plugin-node doesn't boot the server, and it pins the `VITE_` vars tests rely on.
 
+CI ([.github/workflows/ci.yml](.github/workflows/ci.yml)) runs two parallel jobs, Lint (lint + `tsc --noEmit`) and Test, on non-draft PRs (including when a draft is marked ready for review) and on pushes to `master`. It takes the Node version from `volta.node`.
+
 Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix because app code reads them via `import.meta.env`.
 
 ## Architecture
