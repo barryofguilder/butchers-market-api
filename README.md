@@ -44,6 +44,9 @@ Deployed using [Render](https://render.com)!
 
 ### Scripts for Production
 
+On Render, the pnpm commands are prefixed with `corepack` (for example `corepack pnpm build`) so they
+run the pnpm version pinned in `packageManager`, and the start command is `node dist/index.cjs`.
+
 - `pnpm install --frozen-lockfile --prod=false`
   - The `--prod=false` flag installs `devDependencies` too, which the build needs.
 - `pnpm build`
