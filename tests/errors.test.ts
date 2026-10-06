@@ -18,7 +18,7 @@ describe('error middleware', () => {
 
     expect(res.status).toBe(400);
     expect(res.body.errors).toHaveLength(1);
-    expect(res.body.errors[0]).toMatchObject({ status: '400', code: 400, title: 'Bad Request' });
+    expect(res.body.errors[0]).toMatchObject({ status: '400', title: 'Bad Request' });
   });
 
   test('logs unexpected errors and keeps their message out of the response', async () => {
@@ -29,7 +29,7 @@ describe('error middleware', () => {
 
     expect(res.status).toBe(500);
     expect(res.body).toEqual({
-      errors: [{ status: '500', code: 500, title: 'Internal Server Error' }],
+      errors: [{ status: '500', title: 'Internal Server Error' }],
     });
     expect(consoleError).toHaveBeenCalledWith(
       expect.stringContaining('relation "Reviews" is broken')

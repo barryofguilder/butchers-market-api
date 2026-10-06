@@ -33,7 +33,7 @@ router.post('/', async (ctx) => {
       ctx.body = {
         errors: [
           {
-            code: 500,
+            status: '500',
             title: 'Internal Server Error',
             detail: 'Failed to optimize image',
           },

@@ -69,7 +69,6 @@ describe('GET /api/meat-bundles/:id', () => {
     expect(res.status).toBe(404);
     expect(res.body.errors[0]).toMatchObject({
       status: '404',
-      code: 404,
       detail: "MeatBundle not found with the id '999'",
     });
   });

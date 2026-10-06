@@ -14,7 +14,6 @@ const errorMiddleware: Middleware = async (ctx, next) => {
         errors: [
           {
             status: '401',
-            code: 401,
             title: 'Unauthorized',
             detail: 'Protected resource, use Authorization header to get access',
           },
@@ -29,7 +28,6 @@ const errorMiddleware: Middleware = async (ctx, next) => {
         errors: [
           {
             status: '404',
-            code: 404,
             title: 'Not Found',
             detail: `${err.modelName} not found with the id '${err.id}'`,
           },
@@ -47,7 +45,6 @@ const errorMiddleware: Middleware = async (ctx, next) => {
 
           return {
             status: '422',
-            code: 100,
             title,
             source: {
               pointer: `/data/attributes/${valError.path}`,
@@ -66,7 +63,6 @@ const errorMiddleware: Middleware = async (ctx, next) => {
         errors: [
           {
             status: String(err.status),
-            code: err.status,
             title: STATUS_CODES[err.status] ?? 'Error',
             detail: err.message,
           },
@@ -83,7 +79,6 @@ const errorMiddleware: Middleware = async (ctx, next) => {
       errors: [
         {
           status: '500',
-          code: 500,
           title: 'Internal Server Error',
         },
       ],
