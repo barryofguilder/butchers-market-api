@@ -7,13 +7,13 @@ API source code for The Butcher's Market website ([http://thebutchersmarket.com]
 You will need the following things properly installed on your computer.
 
 - [Git](https://git-scm.com/)
-- [Volta](https://volta.sh/)
+- [Volta](https://volta.sh/), with `VOLTA_FEATURE_PNPM=1` set so Volta manages pnpm
 
 ## Installation
 
 - `git clone <repository-url>` this repository
 - `cd butchers-market-api`
-- `npm install`
+- `pnpm install`
 
 ## Configure Environment Variables
 
@@ -21,20 +21,20 @@ You will need the following things properly installed on your computer.
 
 ## Create Database
 
-- `npm run db:create`
-- `npm run db:migrate`
-- `npm run db:seed`
+- `pnpm db:create`
+- `pnpm db:migrate`
+- `pnpm db:seed`
 
 ## Running / Development
 
-- `npm run dev` will start the dev server
+- `pnpm dev` will start the dev server
 
 To debug the application, you can use VS Code. Make sure you select the `dev` script.
 
 ## Running Tests
 
-- `npm test` runs the test suite once
-- `npm run test:watch` reruns tests as files change
+- `pnpm test` runs the test suite once
+- `pnpm test:watch` reruns tests as files change
 
 Tests use an in-memory SQLite database, so they don't need Postgres or a `.env` file.
 
@@ -44,13 +44,13 @@ Deployed using [Render](https://render.com)!
 
 ### Scripts for Production
 
-- `npm ci --include=dev`
-  - The `--include=dev` flag is used to include the `devDependencies` in the `node_modules` folder.
-- `npm run build`
+- `pnpm install --frozen-lockfile --prod=false`
+  - The `--prod=false` flag installs `devDependencies` too, which the build needs.
+- `pnpm build`
   - Build the application for production.
-- `npm run db:migrate`
+- `pnpm db:migrate`
   - Run the database migrations.
-- `npm start`
+- `pnpm start`
   - Start the application in production mode.
 
 ## Sequelize Scripts
@@ -63,7 +63,7 @@ Creates a TypeScript model and the migration for its database table. In the exam
 creating a `Special` model with `title` and `price` attributes.
 
 ```bash
-npm run generate:model -- Special title:string price:decimal
+pnpm generate:model Special title:string price:decimal
 ```
 
 This runs `sequelize-cli model:generate` for the migration, then replaces the JavaScript model it
@@ -79,7 +79,7 @@ Creating a new migration will create the database scripts needed to change the u
 table.
 
 ```bash
-npx sequelize-cli migration:generate --name special-link
+pnpm exec sequelize-cli migration:generate --name special-link
 ```
 
 ### Create Seed
@@ -88,5 +88,5 @@ Once you create a new table, you'll probably want to add some seed data to it. I
 we are creating a seed for the `Special` model.
 
 ```bash
-npx sequelize-cli seed:generate --name special
+pnpm exec sequelize-cli seed:generate --name special
 ```
