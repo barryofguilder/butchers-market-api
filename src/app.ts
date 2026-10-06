@@ -37,7 +37,6 @@ app.use(async (ctx, next) => {
 app.use(errorMiddleware);
 
 app.use(cors());
-app.use(koaBody({ multipart: true }));
 
 app.use(router.allowedMethods());
 app.use(
@@ -55,6 +54,9 @@ app.use(
     },
   })
 );
+// Bodies are parsed only after the token is checked, so unauthenticated requests are rejected
+// before anything is read. Multipart is only parsed by the upload route.
+app.use(koaBody());
 app.use(router.routes());
 
 export default app;
