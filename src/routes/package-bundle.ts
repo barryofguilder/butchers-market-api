@@ -35,17 +35,14 @@ router.patch('/:id', async (ctx) => {
 
   const packageBundle = await ctx.app.db.PackageBundle.findOrFail(id);
 
-  try {
-    // Delete the old file path
-    if (packageBundle.fileUrl && packageBundle.fileUrl !== attrs.fileUrl) {
-      await deleteUploadedFile(packageBundle.fileUrl);
-    }
-  } catch (error) {
-    console.error(error);
-  }
-
   packageBundle.set({ ...attrs, prices, items });
+  // Only a different fileUrl replaces the file, and only once the save succeeds.
+  const oldFileUrl = packageBundle.changed('fileUrl') ? packageBundle.previous('fileUrl') : null;
   await packageBundle.save();
+
+  if (oldFileUrl) {
+    await deleteUploadedFile(oldFileUrl);
+  }
 
   ctx.body = ctx.app.serialize('package-bundle', packageBundle);
 });
