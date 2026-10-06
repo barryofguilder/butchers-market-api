@@ -38,20 +38,20 @@ Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix becaus
 1. Model in `src/db/models/<name>.ts` (start with `npm run generate:model`, which also writes the migration; don't use `sequelize-cli model:generate` directly, it writes a JavaScript model): a class extending [`AppModel`](src/db/models/app-model.ts) with `declare`d fields typed via `InferAttributes`/`InferCreationAttributes`, plus a default-exported `(sequelize) => Model.init(...)` function. Registered by hand in [src/db/models/index.ts](src/db/models/index.ts). There is no auto-loading. List `id`, `createdAt` and `updatedAt` in `init` with `allowNull: false` (the typings require them, and listing them otherwise drops the `NOT NULL` Sequelize would add).
 2. Migration in `src/db/migrations/` (CommonJS; a `package.json` with `"type": "commonjs"` in `migrations/` and `seeders/` makes Node load them that way despite the root `"type": "module"`. Existing migrations wrap changes in `queryInterface.sequelize.transaction`).
 3. Serializer in `src/resources/<name>.ts` taking the model class and returning a `ResourceObject` (`{ type, id, attributes, links }`), registered in [src/resources/index.ts](src/resources/index.ts). `serialize()` wraps the result in `{ data }`, converts ids to strings, and only accepts the model that matches the resource type.
-4. Router in `src/routes/<name>.js` exporting `router.routes()`, mounted under the `/api` namespace in [src/routes/index.js](src/routes/index.js). Route paths are plural kebab-case (e.g. `/api/grab-and-gos`).
+4. Router in `src/routes/<name>.ts` exporting `router.routes()`, mounted under the `/api` namespace in [src/routes/index.ts](src/routes/index.ts). Route paths are plural kebab-case (e.g. `/api/grab-and-gos`).
 
 **Conventions in route handlers:**
-- Request bodies are JSON:API: read `ctx.request.body.data.attributes`.
+- Request bodies are JSON:API: read them with `getAttributes<T>(ctx)` from [src/routes/json-api.ts](src/routes/json-api.ts), typed as what the UI sends (usually `CreationAttributes<Model>`, or `Partial<...>` for `PATCH`). It's a type assertion, not validation; Sequelize validation produces the 422s.
 - Filters use bracketed query params, e.g. `ctx.query['filter[isHidden]']`.
 - Use `Model.findOrFail(id)` (a static on `AppModel`). It throws `NotFoundError`, which [src/errors/middleware.ts](src/errors/middleware.ts) turns into a JSON:API 404. Sequelize `ValidationError`/`UniqueConstraintError` become 422s with `source.pointer` set to `/data/attributes/<field>`.
-- Orderable resources have a `displayOrder` column, a `POST /reorder` endpoint that takes an ordered array of `{ id }`, and new records appended at max+1. See [src/routes/meat-bundle.js](src/routes/meat-bundle.js).
-- List-type attributes (e.g. meat bundle `items`) are stored as `|`-delimited strings. Routes `join('|')` on write; the serializer splits on read.
+- Orderable resources have a `displayOrder` column, a `POST /reorder` endpoint that takes an ordered array of `{ id }`, and new records appended at max+1. Reorder bodies are read with `getReorderItems(ctx)`. See [src/routes/meat-bundle.ts](src/routes/meat-bundle.ts).
+- List-type attributes (e.g. meat bundle `items`) are stored as `|`-delimited strings. Routes `join('|')` on write; the serializer splits on read. The route's attributes type swaps the field to `string[]` (e.g. `MeatBundleAttributes`).
 
 **Two DB configs:** [src/config/db.ts](src/config/db.ts) is used by the running app (`import.meta.env`). [src/config/db.cjs](src/config/db.cjs) is used by sequelize-cli (`process.env` via dotenv; wired up in `.sequelizerc`). Keep the two in sync. The app prefers `VITE_DB_URL` when it is set. The environment is `test` under Vitest, `production` when `import.meta.env.PROD`, otherwise `development`.
 
-**Uploads** ([src/routes/upload.js](src/routes/upload.js), [src/utilities/file.ts](src/utilities/file.ts)): multipart `file` plus `generatedFileName`. Images are optimized/resized through the TinyPNG API (skipped for PDFs, `?noOptimize`, or `VITE_OPTIMIZE_IMAGES=false`) and then uploaded to S3 under `VITE_UPLOAD_DIR`.
+**Uploads** ([src/routes/upload.ts](src/routes/upload.ts), [src/utilities/file.ts](src/utilities/file.ts)): multipart `file` plus `generatedFileName`. Images are optimized/resized through the TinyPNG API (skipped for PDFs, `?noOptimize`, or `VITE_OPTIMIZE_IMAGES=false`) and then uploaded to S3 under `VITE_UPLOAD_DIR`.
 
-Source is being converted to TypeScript: everything except `src/routes/` and `tests/` is `.ts`. `allowJs` in `tsconfig.json` lets the two mix until the conversion is done. Migrations and seeders stay CommonJS `.js` because sequelize-cli loads them directly. `tsc` runs in strict mode but only for type-checking (`noEmit`).
+Source is being converted to TypeScript: everything except `tests/` is `.ts`. Migrations and seeders stay CommonJS `.js` because sequelize-cli loads them directly. `tsc` runs in strict mode but only for type-checking (`noEmit`).
 
 ## Conventions
 

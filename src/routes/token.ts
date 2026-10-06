@@ -2,31 +2,30 @@ import Router from '@koa/router';
 import jwt from 'jsonwebtoken';
 
 import { isBlank } from '../utilities/is-blank';
+import { getAttributes } from './json-api';
 
 const router = new Router();
 
+// The error middleware turns any error with `status: 401` into a JSON:API 401.
 const handleError = () => {
-  let error = new Error();
-  error.status = 401;
-
-  throw error;
+  throw Object.assign(new Error(), { status: 401 });
 };
 
 router.post('/', async (ctx) => {
-  const { username, password } = ctx.request.body.data.attributes;
+  const { username, password } = getAttributes<{ username?: string; password?: string }>(ctx);
 
   if (isBlank(username) || isBlank(password)) {
     return handleError();
   }
 
   if (
-    username.toLowerCase() !== import.meta.env.VITE_TOKEN_USERNAME ||
+    username!.toLowerCase() !== import.meta.env.VITE_TOKEN_USERNAME ||
     password !== import.meta.env.VITE_TOKEN_PASSWORD
   ) {
     return handleError();
   }
 
-  const token = await jwt.sign(
+  const token = jwt.sign(
     {
       username,
     },

@@ -1,11 +1,17 @@
 import Router from '@koa/router';
+import type { CreationAttributes } from 'sequelize';
+import type { MeatBundle } from '../db/models/meat-bundle';
+import { getAttributes, getReorderItems } from './json-api';
+
+// The UI sends `items` as an array; it's stored `|`-delimited.
+type MeatBundleAttributes = Omit<CreationAttributes<MeatBundle>, 'items'> & { items: string[] };
 
 const router = new Router();
 
 router.get('/', async (ctx) => {
   const featured = ctx.query['filter[featured]'];
   const isHidden = ctx.query['filter[isHidden]'];
-  let where = {};
+  const where: { featured?: boolean; isHidden?: boolean } = {};
 
   if (featured !== undefined) {
     where.featured = true;
@@ -15,7 +21,7 @@ router.get('/', async (ctx) => {
     where.isHidden = isHidden === 'true';
   }
 
-  let meatBundles = await ctx.app.db.MeatBundle.findAll({
+  const meatBundles = await ctx.app.db.MeatBundle.findAll({
     where,
     order: [['displayOrder', 'asc']],
   });
@@ -31,21 +37,15 @@ router.get('/:id', async (ctx) => {
 });
 
 router.post('/', async (ctx) => {
-  const attrs = ctx.request.body.data.attributes;
-
-  attrs.items = attrs.items ? attrs.items.join('|') : attrs.items;
+  const attrs = getAttributes<MeatBundleAttributes>(ctx);
+  const items = attrs.items ? attrs.items.join('|') : attrs.items;
 
   const meatBundles = await ctx.app.db.MeatBundle.findAll({
     order: [['displayOrder', 'desc']],
   });
+  const displayOrder = meatBundles.length > 0 ? (meatBundles[0].displayOrder ?? 0) + 1 : 1;
 
-  if (meatBundles.length > 0) {
-    attrs.displayOrder = meatBundles[0].displayOrder + 1;
-  } else {
-    attrs.displayOrder = 1;
-  }
-
-  const meatBundle = await ctx.app.db.MeatBundle.create(attrs);
+  const meatBundle = await ctx.app.db.MeatBundle.create({ ...attrs, items, displayOrder });
 
   ctx.status = 201;
   ctx.set('Location', `/meat-bundles/${meatBundle.id}`);
@@ -54,8 +54,7 @@ router.post('/', async (ctx) => {
 });
 
 router.post('/reorder', async (ctx) => {
-  const items =
-    typeof ctx.request.body === 'string' ? JSON.parse(ctx.request.body) : ctx.request.body;
+  const items = getReorderItems(ctx);
   const meatBundles = await ctx.app.db.MeatBundle.findAll();
 
   // Reorder in a transaction so a failed save cannot leave a partial ordering behind.
@@ -79,13 +78,12 @@ router.post('/reorder', async (ctx) => {
 
 router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
-  const attrs = ctx.request.body.data.attributes;
-
-  attrs.items = attrs.items ? attrs.items.join('|') : attrs.items;
+  const attrs = getAttributes<Partial<MeatBundleAttributes>>(ctx);
+  const items = attrs.items ? attrs.items.join('|') : attrs.items;
 
   const meatBundle = await ctx.app.db.MeatBundle.findOrFail(id);
 
-  meatBundle.set(attrs);
+  meatBundle.set({ ...attrs, items });
   await meatBundle.save();
 
   ctx.body = ctx.app.serialize('meat-bundle', meatBundle);

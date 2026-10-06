@@ -13,8 +13,12 @@ const router = new Router();
 
 router.post('/', async (ctx) => {
   const noOptimize = ctx.query['noOptimize'] !== undefined || OPTIMIZE_IMAGES === false;
-  const file = ctx.request.files.file;
-  const fileName = ctx.request.body.generatedFileName;
+  const file = ctx.request.files?.file;
+  const { generatedFileName: fileName } = ctx.request.body as { generatedFileName: string };
+
+  if (!file || Array.isArray(file)) {
+    throw new Error('Expected a single file in the "file" field');
+  }
 
   if (isPdf(fileName) || noOptimize) {
     await uploadFile(file, fileName);

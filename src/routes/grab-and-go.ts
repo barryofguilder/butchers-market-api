@@ -1,12 +1,15 @@
 import Router from '@koa/router';
+import type { CreationAttributes } from 'sequelize';
+import type { GrabAndGo } from '../db/models/grab-and-go';
 import { deleteUploadedFile } from '../utilities/file';
+import { getAttributes } from './json-api';
 
 const router = new Router();
 
 router.get('/', async (ctx) => {
   const inStock = ctx.query['filter[inStock]'];
   const isHoliday = ctx.query['filter[isHoliday]'];
-  let where = {};
+  const where: { inStock?: boolean; isHoliday?: boolean } = {};
 
   if (inStock !== undefined) {
     where.inStock = inStock === 'true';
@@ -16,7 +19,7 @@ router.get('/', async (ctx) => {
     where.isHoliday = isHoliday === 'true';
   }
 
-  let items = await ctx.app.db.GrabAndGo.findAll({
+  const items = await ctx.app.db.GrabAndGo.findAll({
     where,
     order: [['title', 'asc']],
   });
@@ -32,7 +35,7 @@ router.get('/:id', async (ctx) => {
 });
 
 router.post('/', async (ctx) => {
-  const attrs = ctx.request.body.data.attributes;
+  const attrs = getAttributes<CreationAttributes<GrabAndGo>>(ctx);
   const item = await ctx.app.db.GrabAndGo.create(attrs);
 
   ctx.status = 201;
@@ -43,7 +46,7 @@ router.post('/', async (ctx) => {
 
 router.patch('/:id', async (ctx) => {
   const id = ctx.params.id;
-  const attrs = ctx.request.body.data.attributes;
+  const attrs = getAttributes<Partial<CreationAttributes<GrabAndGo>>>(ctx);
   const item = await ctx.app.db.GrabAndGo.findOrFail(id);
 
   try {
@@ -66,7 +69,9 @@ router.del('/:id', async (ctx) => {
   const item = await ctx.app.db.GrabAndGo.findOrFail(id);
 
   try {
-    await deleteUploadedFile(item.imageUrl);
+    if (item.imageUrl) {
+      await deleteUploadedFile(item.imageUrl);
+    }
   } catch (error) {
     console.log(error);
   }
