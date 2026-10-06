@@ -34,7 +34,7 @@ Setup: copy `.env.example` to `.env`. All env vars use the `VITE_` prefix becaus
 
 ## Architecture
 
-**Request pipeline** ([src/app.ts](src/app.ts); [src/index.ts](src/index.ts) only calls `listen`, and only in production): error middleware → logger (skips the `/api/` health check) → CORS → koa-body (multipart enabled) → koa-jwt → router. JWT auth is required for every non-`GET` request except `/api/token`. Tokens come from `POST /api/token`, which checks a single username/password from env and issues a 30-day JWT.
+**Request pipeline** ([src/app.ts](src/app.ts); [src/index.ts](src/index.ts) only calls `listen`, and only in production): logger (skips the `/api/` health check) → error middleware → CORS → koa-jwt → koa-body → router. JWT auth is required for every non-`GET` request except `/api/token`, and runs before any body is parsed. The global koa-body doesn't parse multipart; only the upload route does, with its own size limit. Tokens come from `POST /api/token`, which checks a single username/password from env and issues a 30-day JWT.
 
 **The app object is the service locator.** `app.db` (Sequelize models) and `app.serialize` (JSON:API serializer) are attached in `app.ts`. Route handlers reach them via `ctx.app.db.<Model>` and `ctx.app.serialize('<type>', ...)` rather than importing them. Both are typed through a `declare module 'koa'` augmentation of `DefaultContext` in `app.ts`, so `ctx.app.db.MeatBundle` is a typed model class.
 

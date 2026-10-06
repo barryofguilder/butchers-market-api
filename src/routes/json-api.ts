@@ -11,7 +11,15 @@ interface JsonApiDocument<T> {
  * bad values into 422s.
  */
 export function getAttributes<T>(ctx: { request: { body?: unknown } }): T {
-  return (ctx.request.body as JsonApiDocument<T>).data.attributes;
+  const body = ctx.request.body as Partial<JsonApiDocument<T>> | undefined;
+
+  if (!body?.data?.attributes) {
+    throw Object.assign(new Error('Expected a JSON:API document with data.attributes'), {
+      status: 400,
+    });
+  }
+
+  return body.data.attributes;
 }
 
 /** Reads the ordered `[{ id }]` array sent to `POST /reorder` endpoints. */

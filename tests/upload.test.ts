@@ -1,6 +1,10 @@
+import { randomUUID } from 'crypto';
 import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
+import { MAX_UPLOAD_SIZE } from '../src/routes/upload';
 import { authHeader, request } from './helpers';
 
 // Stub out TinyPNG and S3 so only the multipart parsing and routing are exercised.
@@ -17,6 +21,27 @@ const file = vi.mocked(await import('../src/utilities/file'));
 beforeEach(() => {
   vi.clearAllMocks();
 });
+
+// Formidable writes uploads to the OS temp directory with random names, so a parsed upload is
+// found by its contents.
+function tempFilesContaining(contents: string) {
+  const dir = os.tmpdir();
+
+  return fs.readdirSync(dir).filter((name) => {
+    try {
+      const filePath = path.join(dir, name);
+      const stat = fs.statSync(filePath);
+
+      return (
+        stat.isFile() &&
+        stat.size === contents.length &&
+        fs.readFileSync(filePath, 'utf8') === contents
+      );
+    } catch {
+      return false;
+    }
+  });
+}
 
 describe('POST /api/upload', () => {
   test('optimizes and uploads an image', async () => {
@@ -63,12 +88,41 @@ describe('POST /api/upload', () => {
     expect(file.uploadOptimizedFile).not.toHaveBeenCalled();
   });
 
-  test('requires a token', async () => {
+  test('requires a token before reading the file', async () => {
+    const contents = randomUUID();
+
     const res = await request()
       .post('/api/upload')
       .field('generatedFileName', 'abc123.png')
-      .attach('file', Buffer.from('fake image'), 'photo.png');
+      .attach('file', Buffer.from(contents), 'photo.png');
 
     expect(res.status).toBe(401);
+    expect(tempFilesContaining(contents)).toEqual([]);
+  });
+
+  test('rejects files over the size limit', async () => {
+    const res = await request()
+      .post('/api/upload')
+      .set(authHeader())
+      .field('generatedFileName', 'abc123.png')
+      .attach('file', Buffer.alloc(MAX_UPLOAD_SIZE + 1), 'photo.png');
+
+    expect(res.status).toBe(413);
+    expect(file.optimizeImage).not.toHaveBeenCalled();
+  });
+});
+
+describe('multipart bodies on other routes', () => {
+  test('are not parsed', async () => {
+    const contents = randomUUID();
+
+    const res = await request()
+      .post('/api/specials')
+      .set(authHeader())
+      .field('title', 'Brisket')
+      .attach('file', Buffer.from(contents), 'photo.png');
+
+    expect(res.status).toBe(400);
+    expect(tempFilesContaining(contents)).toEqual([]);
   });
 });
